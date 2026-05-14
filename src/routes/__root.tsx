@@ -81,10 +81,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Imagens de Orixás, Pretos Velhos, Caboclos, guias, velas e artigos ritualísticos. Peças artesanais com respeito às tradições da Umbanda." },
       { name: "author", content: "Axé Sagrado" },
       { property: "og:title", content: "Axé Sagrado — Casa de Umbanda" },
-      { property: "og:description", content: "Catálogo espiritual com peças artesanais de Umbanda." },
+      { property: "og:description", content: "Imagens de Orixás, Pretos Velhos, Caboclos, guias, velas e artigos ritualísticos. Peças artesanais com respeito às tradições da Umbanda." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Axé Sagrado — Casa de Umbanda" },
+      { name: "twitter:description", content: "Imagens de Orixás, Pretos Velhos, Caboclos, guias, velas e artigos ritualísticos. Peças artesanais com respeito às tradições da Umbanda." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b0a5db10-3e18-4d6f-bee3-7e8134aab6c3/id-preview-ca43b61b--a8c0d049-17cf-423d-b78d-44a38e55c318.lovable.app-1778763505327.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b0a5db10-3e18-4d6f-bee3-7e8134aab6c3/id-preview-ca43b61b--a8c0d049-17cf-423d-b78d-44a38e55c318.lovable.app-1778763505327.png" },
     ],
     links: [
       {
