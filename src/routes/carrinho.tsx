@@ -34,8 +34,45 @@ export const Route = createFileRoute("/carrinho")({
 
 function CartPage() {
   const { items, setQty, remove, subtotal, count, clear } = useCart();
-  const shipping = subtotal > 350 ? 0 : subtotal > 0 ? 24.9 : 0;
-  const total = subtotal + shipping;
+
+  const [cep, setCep] = useState("");
+  const [shippingOpts, setShippingOpts] = useState<ShippingOption[] | null>(null);
+  const [shippingId, setShippingId] = useState<string>("pac");
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [couponInput, setCouponInput] = useState("");
+
+  const handleCalcShipping = () => {
+    const digits = cep.replace(/\D/g, "");
+    if (digits.length !== 8) {
+      toast.error("CEP inválido", { description: "Informe um CEP com 8 dígitos." });
+      return;
+    }
+    const opts = calcShipping(digits, subtotal);
+    setShippingOpts(opts);
+    setShippingId(opts[0].id);
+    toast.success("Frete calculado", { description: `Opções para ${digits.slice(0, 5)}-${digits.slice(5)}` });
+  };
+
+  const handleApplyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    const found = COUPONS.find((c) => c.code === code);
+    if (!found) {
+      toast.error("Cupom inválido", { description: "Tente AXE10, PRETOVELHO20 ou FRETEGRATIS." });
+      return;
+    }
+    setCoupon(found);
+    toast.success("Cupom aplicado", { description: found.label });
+  };
+
+  const selectedShipping = shippingOpts?.find((o) => o.id === shippingId) ?? null;
+  const baseShipping = selectedShipping
+    ? selectedShipping.price
+    : subtotal > 350 ? 0 : subtotal > 0 ? 24.9 : 0;
+  const freteGratis = coupon?.code === "FRETEGRATIS";
+  const shipping = freteGratis ? 0 : baseShipping;
+  const discount =
+    coupon && coupon.type === "percent" ? (subtotal * coupon.value) / 100 : 0;
+  const total = Math.max(0, subtotal - discount + shipping);
 
   if (count === 0) {
     return (
