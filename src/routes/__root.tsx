@@ -12,6 +12,7 @@ import {
 import appCss from "../styles.css?url";
 import { CartProvider } from "@/contexts/CartContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
+import { ProductsProvider } from "@/contexts/ProductsContext";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsappFab } from "@/components/site/WhatsappFab";
@@ -127,6 +128,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AdminAuthProvider>
+        <ProductsProvider>
         <CartProvider>
           <div className="flex min-h-screen flex-col">
             {!isAdmin && <Header />}
@@ -138,6 +140,7 @@ function RootComponent() {
             <Toaster position="top-center" richColors />
           </div>
         </CartProvider>
+        </ProductsProvider>
       </AdminAuthProvider>
     </QueryClientProvider>
   );
