@@ -121,20 +121,24 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { location } = useRouterState();
+  const isAdmin = location.pathname.startsWith("/admin");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <Footer />
-          <WhatsappFab />
-          <Toaster position="top-center" richColors />
-        </div>
-      </CartProvider>
+      <AdminAuthProvider>
+        <CartProvider>
+          <div className="flex min-h-screen flex-col">
+            {!isAdmin && <Header />}
+            <main className="flex-1">
+              <Outlet />
+            </main>
+            {!isAdmin && <Footer />}
+            {!isAdmin && <WhatsappFab />}
+            <Toaster position="top-center" richColors />
+          </div>
+        </CartProvider>
+      </AdminAuthProvider>
     </QueryClientProvider>
   );
 }
