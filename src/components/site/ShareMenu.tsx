@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Share2, Check, Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
