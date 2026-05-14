@@ -126,6 +126,7 @@ function RootComponent() {
           </main>
           <Footer />
           <WhatsappFab />
+          <Toaster position="top-center" richColors />
         </div>
       </CartProvider>
     </QueryClientProvider>
