@@ -9,6 +9,10 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { CartProvider } from "@/contexts/CartContext";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
+import { WhatsappFab } from "@/components/site/WhatsappFab";
 
 function NotFoundComponent() {
   return (
@@ -72,11 +76,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Axé Sagrado — Casa de Umbanda" },
+      { name: "description", content: "Imagens de Orixás, Pretos Velhos, Caboclos, guias, velas e artigos ritualísticos. Peças artesanais com respeito às tradições da Umbanda." },
+      { name: "author", content: "Axé Sagrado" },
+      { property: "og:title", content: "Axé Sagrado — Casa de Umbanda" },
+      { property: "og:description", content: "Catálogo espiritual com peças artesanais de Umbanda." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
@@ -113,7 +117,16 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <CartProvider>
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+          <WhatsappFab />
+        </div>
+      </CartProvider>
     </QueryClientProvider>
   );
 }
