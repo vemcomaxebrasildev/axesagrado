@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { type Product, formatBRL } from "@/data/products";
 import { cn } from "@/lib/utils";
+import { ShareMenu } from "@/components/site/ShareMenu";
 
 export function ProductCard({ product, className }: { product: Product; className?: string }) {
   const discount = product.oldPrice
