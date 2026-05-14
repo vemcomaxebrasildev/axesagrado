@@ -299,9 +299,12 @@ function CartPage() {
                   </div>
                 </dl>
 
-              <button className="mt-6 w-full rounded-full bg-foreground py-3.5 text-sm font-medium text-background transition hover:bg-primary">
+              <Link
+                to="/checkout"
+                className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-foreground py-3.5 text-sm font-medium text-background transition hover:bg-primary"
+              >
                 Finalizar compra
-              </button>
+              </Link>
               <p className="mt-3 text-center text-[11px] text-muted-foreground">
                 Pagamento seguro · PIX, cartão e boleto
               </p>
