@@ -27,12 +27,33 @@ function AdminLoginPage() {
     setError(null);
     setSubmitting(true);
     const res = await login(email, password);
-    setSubmitting(false);
     if (!res.ok) {
+      setSubmitting(false);
       setError(res.error ?? "Falha no login");
       return;
     }
+    // verify admin role explicitly so we can redirect immediately
+    const { data: sessionData } = await supabase.auth.getSession();
+    const uid = sessionData.session?.user.id;
+    if (!uid) {
+      setSubmitting(false);
+      setError("Sessão não encontrada.");
+      return;
+    }
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", uid)
+      .eq("role", "admin")
+      .maybeSingle();
+    setSubmitting(false);
+    if (!roleData) {
+      await supabase.auth.signOut();
+      setError("Esta conta não tem permissão de administrador.");
+      return;
+    }
     toast.success("Bem-vindo!", { description: "Acesso liberado." });
+    navigate({ to: "/admin" });
   };
 
   return (
