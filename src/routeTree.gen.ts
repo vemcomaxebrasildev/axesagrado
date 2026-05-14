@@ -13,6 +13,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as MinhaContaRouteImport } from './routes/minha-conta'
 import { Route as KitsRouteImport } from './routes/kits'
 import { Route as CongaRouteImport } from './routes/conga'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as IndexRouteImport } from './routes/index'
@@ -36,6 +37,11 @@ const KitsRoute = KitsRouteImport.update({
 const CongaRoute = CongaRouteImport.update({
   id: '/conga',
   path: '/conga',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CatalogoRoute = CatalogoRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/carrinho': typeof CarrinhoRoute
   '/catalogo': typeof CatalogoRoute
+  '/checkout': typeof CheckoutRoute
   '/conga': typeof CongaRoute
   '/kits': typeof KitsRoute
   '/minha-conta': typeof MinhaContaRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/carrinho': typeof CarrinhoRoute
   '/catalogo': typeof CatalogoRoute
+  '/checkout': typeof CheckoutRoute
   '/conga': typeof CongaRoute
   '/kits': typeof KitsRoute
   '/minha-conta': typeof MinhaContaRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/carrinho': typeof CarrinhoRoute
   '/catalogo': typeof CatalogoRoute
+  '/checkout': typeof CheckoutRoute
   '/conga': typeof CongaRoute
   '/kits': typeof KitsRoute
   '/minha-conta': typeof MinhaContaRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/carrinho'
     | '/catalogo'
+    | '/checkout'
     | '/conga'
     | '/kits'
     | '/minha-conta'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/carrinho'
     | '/catalogo'
+    | '/checkout'
     | '/conga'
     | '/kits'
     | '/minha-conta'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/carrinho'
     | '/catalogo'
+    | '/checkout'
     | '/conga'
     | '/kits'
     | '/minha-conta'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CarrinhoRoute: typeof CarrinhoRoute
   CatalogoRoute: typeof CatalogoRoute
+  CheckoutRoute: typeof CheckoutRoute
   CongaRoute: typeof CongaRoute
   KitsRoute: typeof KitsRoute
   MinhaContaRoute: typeof MinhaContaRoute
@@ -164,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CongaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/catalogo': {
       id: '/catalogo'
       path: '/catalogo'
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CarrinhoRoute: CarrinhoRoute,
   CatalogoRoute: CatalogoRoute,
+  CheckoutRoute: CheckoutRoute,
   CongaRoute: CongaRoute,
   KitsRoute: KitsRoute,
   MinhaContaRoute: MinhaContaRoute,
@@ -208,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
