@@ -59,15 +59,15 @@ function AdminProdutos() {
   const saveMut = useMutation({
     mutationFn: async (p: Partial<ProductRow>) => {
       const payload = {
-        slug: p.slug || slugify(p.name ?? ""),
-        name: p.name,
-        category: p.category,
-        description: p.description,
-        short_description: p.short_description,
-        price: Number(p.price),
+        slug: (p.slug || slugify(p.name ?? "")) as string,
+        name: (p.name ?? "") as string,
+        category: (p.category ?? "orixas") as string,
+        description: p.description ?? null,
+        short_description: p.short_description ?? null,
+        price: Number(p.price ?? 0),
         old_price: p.old_price ? Number(p.old_price) : null,
-        stock: Number(p.stock),
-        image: p.image,
+        stock: Number(p.stock ?? 0),
+        image: p.image ?? null,
         badge: p.badge || null,
       };
       if (p.id) {
