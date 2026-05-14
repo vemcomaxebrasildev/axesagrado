@@ -13,6 +13,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsappFab } from "@/components/site/WhatsappFab";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -125,6 +126,7 @@ function RootComponent() {
           </main>
           <Footer />
           <WhatsappFab />
+          <Toaster position="top-center" richColors />
         </div>
       </CartProvider>
     </QueryClientProvider>

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { type Product, formatBRL } from "@/data/products";
 import { cn } from "@/lib/utils";
+import { ShareMenu } from "@/components/site/ShareMenu";
 
 export function ProductCard({ product, className }: { product: Product; className?: string }) {
   const discount = product.oldPrice
@@ -32,6 +33,9 @@ export function ProductCard({ product, className }: { product: Product; classNam
             −{discount}%
           </span>
         )}
+        <div className="absolute bottom-3 right-3 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
+          <ShareMenu slug={product.slug} title={product.name} />
+        </div>
       </div>
       <div className="mt-4 flex items-start justify-between gap-3">
         <div className="min-w-0">

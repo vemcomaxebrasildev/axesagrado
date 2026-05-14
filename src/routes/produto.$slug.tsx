@@ -3,6 +3,7 @@ import { ArrowLeft, Star, Truck, Shield, Sparkles, Plus, Minus } from "lucide-re
 import { useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ShareMenu } from "@/components/site/ShareMenu";
 import { useCart } from "@/contexts/CartContext";
 
 export const Route = createFileRoute("/produto/$slug")({
@@ -137,6 +138,10 @@ function ProductPage() {
             >
               Adicionar à sacola
             </button>
+          </div>
+
+          <div className="mt-6">
+            <ShareMenu slug={product.slug} title={product.name} variant="inline" />
           </div>
 
           <ul className="mt-8 space-y-3 border-t border-border pt-6 text-sm">
