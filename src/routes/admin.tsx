@@ -16,23 +16,31 @@ const NAV = [
 ];
 
 function AdminLayout() {
-  const { isAuthed, email, logout } = useAdminAuth();
+  const { isAuthed, isAdmin, loading, email, logout } = useAdminAuth();
   const navigate = useNavigate();
   const { location } = useRouterState();
   const isLoginRoute = location.pathname === "/admin/login";
 
   useEffect(() => {
+    if (loading) return;
     if (!isAuthed && !isLoginRoute) {
       navigate({ to: "/admin/login" });
+    } else if (isAuthed && !isAdmin && !isLoginRoute) {
+      // signed in but no admin role
+      navigate({ to: "/admin/login" });
     }
-  }, [isAuthed, isLoginRoute, navigate]);
+  }, [loading, isAuthed, isAdmin, isLoginRoute, navigate]);
 
   if (isLoginRoute) {
     return <Outlet />;
   }
 
-  if (!isAuthed) {
-    return null;
+  if (loading || !isAuthed || !isAdmin) {
+    return (
+      <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">
+        Carregando...
+      </div>
+    );
   }
 
   return (
