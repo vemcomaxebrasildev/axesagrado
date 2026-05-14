@@ -1,7 +1,29 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Truck, Check, X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useCart } from "@/contexts/CartContext";
 import { formatBRL } from "@/data/products";
+
+type Coupon = { code: string; type: "percent" | "fixed"; value: number; label: string };
+const COUPONS: Coupon[] = [
+  { code: "AXE10", type: "percent", value: 10, label: "10% de desconto" },
+  { code: "PRETOVELHO20", type: "percent", value: 20, label: "20% de desconto" },
+  { code: "FRETEGRATIS", type: "fixed", value: 0, label: "Frete grátis" },
+];
+
+type ShippingOption = { id: string; label: string; days: string; price: number };
+function calcShipping(cep: string, subtotal: number): ShippingOption[] {
+  const digits = cep.replace(/\D/g, "");
+  const region = Number(digits.slice(0, 1) || "0");
+  const base = 18 + region * 2.4;
+  const free = subtotal > 350;
+  return [
+    { id: "pac", label: "PAC", days: "7 a 12 dias úteis", price: free ? 0 : Math.round(base * 100) / 100 },
+    { id: "sedex", label: "SEDEX", days: "3 a 5 dias úteis", price: Math.round((base + 18) * 100) / 100 },
+    { id: "expresso", label: "Expresso 24h", days: "1 a 2 dias úteis", price: Math.round((base + 38) * 100) / 100 },
+  ];
+}
 
 export const Route = createFileRoute("/carrinho")({
   head: () => ({
