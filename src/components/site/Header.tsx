@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ShoppingBag, Search, Menu, X } from "lucide-react";
+import { ShoppingBag, Search, Menu, X, Package } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { cn } from "@/lib/utils";
@@ -52,6 +52,13 @@ export function Header() {
           <button className="hidden h-10 w-10 items-center justify-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-foreground md:inline-flex">
             <Search className="h-4 w-4" />
           </button>
+          <Link
+            to="/minha-conta"
+            className="hidden h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-medium text-foreground/80 transition hover:border-foreground hover:text-foreground md:inline-flex"
+          >
+            <Package className="h-4 w-4" />
+            <span>Meus pedidos</span>
+          </Link>
           <Link
             to="/carrinho"
             className="relative inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-medium text-background transition hover:opacity-90"
