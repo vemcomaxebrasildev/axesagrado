@@ -23,7 +23,14 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:h-20 md:px-8">
         <Link to="/" className="group flex items-center gap-2.5">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground transition-transform group-hover:rotate-12">
-            <span className="font-display text-lg font-bold">A</span>
+            <img
+              src={iconPretoVelho}
+              alt="Preto Velho"
+              width={512}
+              height={512}
+              loading="lazy"
+              className="h-6 w-6 object-contain [filter:brightness(0)_invert(1)]"
+            />
           </span>
           <span className="flex flex-col leading-none">
             <span className="font-display text-lg font-semibold tracking-tight">Axé Sagrado</span>
