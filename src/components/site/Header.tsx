@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const nav = [
   { to: "/", label: "Início" },
   { to: "/catalogo", label: "Catálogo" },
-  { to: "/catalogo?cat=orixas", label: "Orixás" },
+  { to: "/conga", label: "Monte seu Congá" },
   { to: "/catalogo?cat=pretos-velhos", label: "Pretos Velhos" },
   { to: "/sobre", label: "A Casa" },
 ];
