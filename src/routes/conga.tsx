@@ -181,6 +181,24 @@ function CongaPage() {
                   </span>
                   <span className="text-xs text-muted-foreground">+ imagens escolhidas</span>
                 </div>
+                <span
+                  className={cn(
+                    "mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-medium transition",
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-foreground text-background group-hover:bg-primary",
+                  )}
+                >
+                  {active ? (
+                    <>
+                      <Check className="h-4 w-4" /> Escolhido
+                    </>
+                  ) : (
+                    <>
+                      Quero este <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </span>
               </button>
             );
           })}
