@@ -12,10 +12,14 @@ function AdminClientes() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-clientes"],
     queryFn: async () => {
-      const [profilesRes, ordersRes] = await Promise.all([
+      const [profilesRes, ordersRes, rolesRes] = await Promise.all([
         supabase.from("profiles").select("*").order("created_at", { ascending: false }),
         supabase.from("orders").select("user_id, total, customer_email"),
+        supabase.from("user_roles").select("user_id, role"),
       ]);
+      const adminIds = new Set(
+        (rolesRes.data ?? []).filter((r) => r.role === "admin").map((r) => r.user_id),
+      );
       const totals = new Map<string, { count: number; total: number }>();
       (ordersRes.data ?? []).forEach((o) => {
         const key = o.user_id ?? o.customer_email;
@@ -25,10 +29,12 @@ function AdminClientes() {
         cur.total += Number(o.total);
         totals.set(key, cur);
       });
-      return (profilesRes.data ?? []).map((p) => ({
-        ...p,
-        ...(totals.get(p.id) ?? totals.get(p.email ?? "") ?? { count: 0, total: 0 }),
-      }));
+      return (profilesRes.data ?? [])
+        .filter((p) => !adminIds.has(p.id))
+        .map((p) => ({
+          ...p,
+          ...(totals.get(p.id) ?? totals.get(p.email ?? "") ?? { count: 0, total: 0 }),
+        }));
     },
   });
 
