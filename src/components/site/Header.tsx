@@ -11,6 +11,7 @@ const nav = [
   { to: "/conga", label: "Monte seu Congá" },
   { to: "/catalogo?cat=pretos-velhos", label: "Pretos Velhos" },
   { to: "/sobre", label: "A Casa" },
+  { to: "/minha-conta", label: "Meus pedidos" },
 ];
 
 export function Header() {
