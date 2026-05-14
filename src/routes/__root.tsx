@@ -4,12 +4,14 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
 import { CartProvider } from "@/contexts/CartContext";
+import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsappFab } from "@/components/site/WhatsappFab";
