@@ -67,31 +67,43 @@ function CheckoutPage() {
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) {
-      toast.error("Confira seus dados", {
-        description: "Preencha todos os campos para continuar.",
-      });
+      toast.error("Confira seus dados", { description: "Preencha todos os campos para continuar." });
       return;
     }
     setStep("processing");
-    const id = "AS-" + Math.floor(2050 + Math.random() * 9000);
-    // Simulação: gateway de pagamento
-    await new Promise((r) => setTimeout(r, 2200));
-    setOrderId(id);
-    setStep("success");
-    // Simulação: envio de email
-    setTimeout(() => {
-      toast.success("E-mail enviado", {
-        description: `Confirmação do pedido ${id} enviada para ${email}.`,
-        icon: <Mail className="h-4 w-4" />,
-      });
-    }, 600);
-    // Simulação: envio whatsapp
-    setTimeout(() => {
-      toast.success("WhatsApp enviado", {
-        description: `Mensagem enviada para ${phone}.`,
-        icon: <MessageCircle className="h-4 w-4" />,
-      });
-    }, 1500);
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: sess } = await supabase.auth.getSession();
+      const { data: order, error } = await supabase.from("orders").insert({
+        user_id: sess.session?.user.id ?? null,
+        customer_name: name,
+        customer_email: email,
+        customer_phone: phone,
+        address: `${address} — ${city} — CEP ${cep}`,
+        total,
+        status: "Em preparação",
+      }).select("id").single();
+      if (error) throw error;
+
+      await supabase.from("order_items").insert(
+        items.map((i) => ({
+          order_id: order.id,
+          product_name: i.product.name,
+          quantity: i.qty,
+          unit_price: i.product.price,
+        })),
+      );
+
+      await new Promise((r) => setTimeout(r, 1200));
+      setOrderId("AS-" + order.id.slice(0, 6).toUpperCase());
+      setStep("success");
+      setTimeout(() => toast.success("E-mail enviado", { description: `Confirmação enviada para ${email}.`, icon: <Mail className="h-4 w-4" /> }), 600);
+      setTimeout(() => toast.success("WhatsApp enviado", { description: `Mensagem enviada para ${phone}.`, icon: <MessageCircle className="h-4 w-4" /> }), 1500);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Tente novamente.";
+      toast.error("Erro ao processar pedido", { description: message });
+      setStep("form");
+    }
   };
 
   const finishOrder = () => {
