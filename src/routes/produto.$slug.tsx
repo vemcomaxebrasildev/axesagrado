@@ -3,6 +3,7 @@ import { ArrowLeft, Star, Truck, Shield, Sparkles, Plus, Minus } from "lucide-re
 import { useState } from "react";
 import { products, formatBRL } from "@/data/products";
 import { ProductCard } from "@/components/site/ProductCard";
+import { ShareMenu } from "@/components/site/ShareMenu";
 import { useCart } from "@/contexts/CartContext";
 
 export const Route = createFileRoute("/produto/$slug")({
