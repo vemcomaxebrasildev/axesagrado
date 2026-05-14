@@ -3,6 +3,7 @@ import { ShoppingBag, Search, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { cn } from "@/lib/utils";
+import iconPretoVelho from "@/assets/icon-pretovelho.png";
 
 const nav = [
   { to: "/", label: "Início" },
