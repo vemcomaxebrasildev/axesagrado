@@ -140,6 +140,10 @@ function ProductPage() {
             </button>
           </div>
 
+          <div className="mt-6">
+            <ShareMenu slug={product.slug} title={product.name} variant="inline" />
+          </div>
+
           <ul className="mt-8 space-y-3 border-t border-border pt-6 text-sm">
             <li className="flex items-center gap-3 text-foreground/85">
               <Truck className="h-4 w-4 text-accent" /> {product.shipping} · Frete grátis acima de R$ 350
