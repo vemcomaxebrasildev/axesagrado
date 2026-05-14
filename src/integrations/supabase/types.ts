@@ -103,6 +103,7 @@ export type Database = {
           entity: string | null
           id: string
           image: string | null
+          images: string[]
           name: string
           old_price: number | null
           price: number
@@ -111,6 +112,7 @@ export type Database = {
           slug: string
           stock: number
           updated_at: string
+          video: string | null
           weight: string | null
         }
         Insert: {
@@ -123,6 +125,7 @@ export type Database = {
           entity?: string | null
           id?: string
           image?: string | null
+          images?: string[]
           name: string
           old_price?: number | null
           price?: number
@@ -131,6 +134,7 @@ export type Database = {
           slug: string
           stock?: number
           updated_at?: string
+          video?: string | null
           weight?: string | null
         }
         Update: {
@@ -143,6 +147,7 @@ export type Database = {
           entity?: string | null
           id?: string
           image?: string | null
+          images?: string[]
           name?: string
           old_price?: number | null
           price?: number
@@ -151,6 +156,7 @@ export type Database = {
           slug?: string
           stock?: number
           updated_at?: string
+          video?: string | null
           weight?: string | null
         }
         Relationships: []
