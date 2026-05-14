@@ -9,6 +9,7 @@ const nav = [
   { to: "/", label: "Início" },
   { to: "/catalogo", label: "Catálogo" },
   { to: "/conga", label: "Monte seu Congá" },
+  { to: "/kits", label: "Kits Sagrados" },
   { to: "/catalogo?cat=pretos-velhos", label: "Pretos Velhos" },
   { to: "/sobre", label: "A Casa" },
   { to: "/minha-conta", label: "Meus pedidos" },
