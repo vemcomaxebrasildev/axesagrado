@@ -296,3 +296,77 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+
+function MediaUploader({
+  kind, values, max, onChange,
+}: {
+  kind: "image" | "video";
+  values: string[];
+  max: number;
+  onChange: (arr: string[]) => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const accept = kind === "image" ? "image/*" : "video/*";
+  const remaining = Math.max(0, max - values.length);
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || !files.length) return;
+    const list = Array.from(files).slice(0, remaining);
+    if (!list.length) return;
+    setBusy(true);
+    try {
+      const urls: string[] = [];
+      for (const f of list) {
+        const limit = kind === "image" ? 5 : 50;
+        if (f.size > limit * 1024 * 1024) {
+          toast.error(`Arquivo muito grande (máx ${limit}MB): ${f.name}`);
+          continue;
+        }
+        urls.push(await uploadToBucket(f, kind === "image" ? "images" : "videos"));
+      }
+      onChange([...values, ...urls].slice(0, max));
+    } catch (e) {
+      toast.error("Falha no upload", { description: (e as Error).message });
+    } finally {
+      setBusy(false);
+      if (ref.current) ref.current.value = "";
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {values.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {values.map((url, i) => (
+            <div key={url + i} className="relative h-20 w-20 overflow-hidden rounded-lg border border-border bg-muted">
+              {kind === "image" ? (
+                <img src={url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="grid h-full w-full place-items-center text-muted-foreground">
+                  <Film className="h-6 w-6" />
+                </div>
+              )}
+              <button type="button"
+                onClick={() => onChange(values.filter((_, idx) => idx !== i))}
+                className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-background/90 text-destructive shadow">
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {remaining > 0 && (
+        <>
+          <input ref={ref} type="file" accept={accept} multiple={kind === "image"}
+            onChange={(e) => handleFiles(e.target.files)} className="hidden" />
+          <button type="button" disabled={busy} onClick={() => ref.current?.click()}
+            className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground hover:border-foreground hover:text-foreground disabled:opacity-60">
+            {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+            {kind === "image" ? `Enviar imagem (${values.length}/${max})` : "Enviar vídeo"}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
