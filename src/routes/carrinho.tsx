@@ -305,6 +305,7 @@ function CartPage() {
               <p className="mt-3 text-center text-[11px] text-muted-foreground">
                 Pagamento seguro · PIX, cartão e boleto
               </p>
+              </div>
             </div>
           </aside>
         </div>
