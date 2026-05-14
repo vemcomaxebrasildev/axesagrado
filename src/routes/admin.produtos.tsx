@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Plus, Search, Edit, Trash2, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { Plus, Search, Edit, Trash2, Loader2, Upload, X, Film } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,13 +28,28 @@ type ProductRow = {
   old_price: number | null;
   stock: number;
   image: string | null;
+  images: string[] | null;
+  video: string | null;
   badge: string | null;
 };
 
+const MAX_IMAGES = 5;
+
 const empty: Partial<ProductRow> = {
   slug: "", name: "", category: "orixas", description: "", short_description: "",
-  price: 0, stock: 0, image: "", badge: null,
+  price: 0, stock: 0, image: "", images: [], video: null, badge: null,
 };
+
+async function uploadToBucket(file: File, folder: string) {
+  const ext = file.name.split(".").pop() || "bin";
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage.from("product-media").upload(path, file, {
+    contentType: file.type, upsert: false,
+  });
+  if (error) throw error;
+  const { data } = supabase.storage.from("product-media").getPublicUrl(path);
+  return data.publicUrl;
+}
 
 function slugify(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -58,6 +73,7 @@ function AdminProdutos() {
 
   const saveMut = useMutation({
     mutationFn: async (p: Partial<ProductRow>) => {
+      const imgs = (p.images ?? []).filter(Boolean).slice(0, MAX_IMAGES);
       const payload = {
         slug: (p.slug || slugify(p.name ?? "")) as string,
         name: (p.name ?? "") as string,
@@ -67,7 +83,9 @@ function AdminProdutos() {
         price: Number(p.price ?? 0),
         old_price: p.old_price ? Number(p.old_price) : null,
         stock: Number(p.stock ?? 0),
-        image: p.image ?? null,
+        image: imgs[0] ?? p.image ?? null,
+        images: imgs,
+        video: p.video || null,
         badge: p.badge || null,
       };
       if (p.id) {
