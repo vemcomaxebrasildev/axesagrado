@@ -1,46 +1,79 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-
-const ADMIN_EMAIL = "tiladeira@gmail.com";
-const ADMIN_PASSWORD = "1234";
-const STORAGE_KEY = "axe-admin-session-v1";
+import { supabase } from "@/integrations/supabase/client";
+import type { Session } from "@supabase/supabase-js";
 
 type AdminCtx = {
   isAuthed: boolean;
+  isAdmin: boolean;
+  loading: boolean;
   email: string | null;
-  login: (email: string, password: string) => { ok: boolean; error?: string };
-  logout: () => void;
+  userId: string | null;
+  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  logout: () => Promise<void>;
 };
 
 const Ctx = createContext<AdminCtx | null>(null);
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [email, setEmail] = useState<string | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setEmail(JSON.parse(raw).email);
-    } catch {}
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      if (s?.user) {
+        // defer role check to avoid recursion in callback
+        setTimeout(() => checkRole(s.user.id), 0);
+      } else {
+        setIsAdmin(false);
+        setLoading(false);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      if (data.session?.user) {
+        checkRole(data.session.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = (e: string, p: string) => {
-    if (e.trim().toLowerCase() !== ADMIN_EMAIL || p !== ADMIN_PASSWORD) {
-      return { ok: false, error: "E-mail ou senha incorretos." };
-    }
-    const session = { email: e.trim().toLowerCase(), at: Date.now() };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-    setEmail(session.email);
+  const checkRole = async (uid: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", uid)
+      .eq("role", "admin")
+      .maybeSingle();
+    setIsAdmin(!!data);
+    setLoading(false);
+  };
+
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) return { ok: false, error: "E-mail ou senha incorretos." };
     return { ok: true };
   };
 
-  const logout = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    setEmail(null);
+  const logout = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
-    <Ctx.Provider value={{ isAuthed: !!email, email, login, logout }}>
+    <Ctx.Provider value={{
+      isAuthed: !!session,
+      isAdmin,
+      loading,
+      email: session?.user?.email ?? null,
+      userId: session?.user?.id ?? null,
+      login,
+      logout,
+    }}>
       {children}
     </Ctx.Provider>
   );

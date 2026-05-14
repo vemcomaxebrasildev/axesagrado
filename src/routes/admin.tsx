@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, AlertTriangle } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles } from "lucide-react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { cn } from "@/lib/utils";
 
@@ -16,23 +16,31 @@ const NAV = [
 ];
 
 function AdminLayout() {
-  const { isAuthed, email, logout } = useAdminAuth();
+  const { isAuthed, isAdmin, loading, email, logout } = useAdminAuth();
   const navigate = useNavigate();
   const { location } = useRouterState();
   const isLoginRoute = location.pathname === "/admin/login";
 
   useEffect(() => {
+    if (loading) return;
     if (!isAuthed && !isLoginRoute) {
       navigate({ to: "/admin/login" });
+    } else if (isAuthed && !isAdmin && !isLoginRoute) {
+      // signed in but no admin role
+      navigate({ to: "/admin/login" });
     }
-  }, [isAuthed, isLoginRoute, navigate]);
+  }, [loading, isAuthed, isAdmin, isLoginRoute, navigate]);
 
   if (isLoginRoute) {
     return <Outlet />;
   }
 
-  if (!isAuthed) {
-    return null;
+  if (loading || !isAuthed || !isAdmin) {
+    return (
+      <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">
+        Carregando...
+      </div>
+    );
   }
 
   return (
@@ -112,13 +120,6 @@ function AdminLayout() {
             </div>
           </header>
           <div className="p-6 md:p-8">
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-foreground/80">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-              <p>
-                Painel demo · autenticação local. Para produção, ative Lovable Cloud
-                para login seguro com banco de dados.
-              </p>
-            </div>
             <Outlet />
           </div>
         </div>
