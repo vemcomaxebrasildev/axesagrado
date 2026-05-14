@@ -9,7 +9,7 @@ type ShareTarget = {
   color: string;
   href?: (url: string, text: string) => string;
   copyOnly?: boolean;
-  icon: JSX.Element;
+  icon: ReactNode;
 };
 
 const TARGETS: ShareTarget[] = [
