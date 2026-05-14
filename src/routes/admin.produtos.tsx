@@ -229,8 +229,21 @@ function AdminProdutos() {
                 <Field label="Preço antigo"><input type="number" step="0.01" value={editing.old_price ?? ""} onChange={(e) => setEditing({ ...editing, old_price: e.target.value ? Number(e.target.value) : null })} className={input} /></Field>
                 <Field label="Estoque"><input type="number" required value={editing.stock ?? 0} onChange={(e) => setEditing({ ...editing, stock: Number(e.target.value) })} className={input} /></Field>
               </div>
-              <Field label="URL da imagem">
-                <input value={editing.image ?? ""} onChange={(e) => setEditing({ ...editing, image: e.target.value })} className={input} placeholder="https://..." />
+              <Field label={`Imagens (até ${MAX_IMAGES})`}>
+                <MediaUploader
+                  kind="image"
+                  values={editing.images ?? []}
+                  max={MAX_IMAGES}
+                  onChange={(arr) => setEditing({ ...editing, images: arr, image: arr[0] ?? null })}
+                />
+              </Field>
+              <Field label="Vídeo (opcional)">
+                <MediaUploader
+                  kind="video"
+                  values={editing.video ? [editing.video] : []}
+                  max={1}
+                  onChange={(arr) => setEditing({ ...editing, video: arr[0] ?? null })}
+                />
               </Field>
               <Field label="Selo (opcional)">
                 <select value={editing.badge ?? ""} onChange={(e) => setEditing({ ...editing, badge: e.target.value || null })} className={input}>
