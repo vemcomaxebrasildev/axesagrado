@@ -120,13 +120,6 @@ function AdminLayout() {
             </div>
           </header>
           <div className="p-6 md:p-8">
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-foreground/80">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-              <p>
-                Painel demo · autenticação local. Para produção, ative Lovable Cloud
-                para login seguro com banco de dados.
-              </p>
-            </div>
             <Outlet />
           </div>
         </div>
