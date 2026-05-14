@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Plus, Search, Edit, Trash2, Loader2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { Plus, Search, Edit, Trash2, Loader2, Upload, X, Film } from "lucide-react";
 import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,13 +28,28 @@ type ProductRow = {
   old_price: number | null;
   stock: number;
   image: string | null;
+  images: string[] | null;
+  video: string | null;
   badge: string | null;
 };
 
+const MAX_IMAGES = 5;
+
 const empty: Partial<ProductRow> = {
   slug: "", name: "", category: "orixas", description: "", short_description: "",
-  price: 0, stock: 0, image: "", badge: null,
+  price: 0, stock: 0, image: "", images: [], video: null, badge: null,
 };
+
+async function uploadToBucket(file: File, folder: string) {
+  const ext = file.name.split(".").pop() || "bin";
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage.from("product-media").upload(path, file, {
+    contentType: file.type, upsert: false,
+  });
+  if (error) throw error;
+  const { data } = supabase.storage.from("product-media").getPublicUrl(path);
+  return data.publicUrl;
+}
 
 function slugify(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -58,6 +73,7 @@ function AdminProdutos() {
 
   const saveMut = useMutation({
     mutationFn: async (p: Partial<ProductRow>) => {
+      const imgs = (p.images ?? []).filter(Boolean).slice(0, MAX_IMAGES);
       const payload = {
         slug: (p.slug || slugify(p.name ?? "")) as string,
         name: (p.name ?? "") as string,
@@ -67,7 +83,9 @@ function AdminProdutos() {
         price: Number(p.price ?? 0),
         old_price: p.old_price ? Number(p.old_price) : null,
         stock: Number(p.stock ?? 0),
-        image: p.image ?? null,
+        image: imgs[0] ?? p.image ?? null,
+        images: imgs,
+        video: p.video || null,
         badge: p.badge || null,
       };
       if (p.id) {
@@ -211,8 +229,21 @@ function AdminProdutos() {
                 <Field label="Preço antigo"><input type="number" step="0.01" value={editing.old_price ?? ""} onChange={(e) => setEditing({ ...editing, old_price: e.target.value ? Number(e.target.value) : null })} className={input} /></Field>
                 <Field label="Estoque"><input type="number" required value={editing.stock ?? 0} onChange={(e) => setEditing({ ...editing, stock: Number(e.target.value) })} className={input} /></Field>
               </div>
-              <Field label="URL da imagem">
-                <input value={editing.image ?? ""} onChange={(e) => setEditing({ ...editing, image: e.target.value })} className={input} placeholder="https://..." />
+              <Field label={`Imagens (até ${MAX_IMAGES})`}>
+                <MediaUploader
+                  kind="image"
+                  values={editing.images ?? []}
+                  max={MAX_IMAGES}
+                  onChange={(arr) => setEditing({ ...editing, images: arr, image: arr[0] ?? null })}
+                />
+              </Field>
+              <Field label="Vídeo (opcional)">
+                <MediaUploader
+                  kind="video"
+                  values={editing.video ? [editing.video] : []}
+                  max={1}
+                  onChange={(arr) => setEditing({ ...editing, video: arr[0] ?? null })}
+                />
               </Field>
               <Field label="Selo (opcional)">
                 <select value={editing.badge ?? ""} onChange={(e) => setEditing({ ...editing, badge: e.target.value || null })} className={input}>
@@ -263,5 +294,79 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <span className="mb-1 block text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{label}</span>
       {children}
     </label>
+  );
+}
+
+function MediaUploader({
+  kind, values, max, onChange,
+}: {
+  kind: "image" | "video";
+  values: string[];
+  max: number;
+  onChange: (arr: string[]) => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const accept = kind === "image" ? "image/*" : "video/*";
+  const remaining = Math.max(0, max - values.length);
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || !files.length) return;
+    const list = Array.from(files).slice(0, remaining);
+    if (!list.length) return;
+    setBusy(true);
+    try {
+      const urls: string[] = [];
+      for (const f of list) {
+        const limit = kind === "image" ? 5 : 50;
+        if (f.size > limit * 1024 * 1024) {
+          toast.error(`Arquivo muito grande (máx ${limit}MB): ${f.name}`);
+          continue;
+        }
+        urls.push(await uploadToBucket(f, kind === "image" ? "images" : "videos"));
+      }
+      onChange([...values, ...urls].slice(0, max));
+    } catch (e) {
+      toast.error("Falha no upload", { description: (e as Error).message });
+    } finally {
+      setBusy(false);
+      if (ref.current) ref.current.value = "";
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {values.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {values.map((url, i) => (
+            <div key={url + i} className="relative h-20 w-20 overflow-hidden rounded-lg border border-border bg-muted">
+              {kind === "image" ? (
+                <img src={url} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="grid h-full w-full place-items-center text-muted-foreground">
+                  <Film className="h-6 w-6" />
+                </div>
+              )}
+              <button type="button"
+                onClick={() => onChange(values.filter((_, idx) => idx !== i))}
+                className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-background/90 text-destructive shadow">
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+      {remaining > 0 && (
+        <>
+          <input ref={ref} type="file" accept={accept} multiple={kind === "image"}
+            onChange={(e) => handleFiles(e.target.files)} className="hidden" />
+          <button type="button" disabled={busy} onClick={() => ref.current?.click()}
+            className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground hover:border-foreground hover:text-foreground disabled:opacity-60">
+            {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+            {kind === "image" ? `Enviar imagem (${values.length}/${max})` : "Enviar vídeo"}
+          </button>
+        </>
+      )}
+    </div>
   );
 }
