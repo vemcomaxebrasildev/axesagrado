@@ -288,16 +288,16 @@ function CartPage() {
                       {shipping === 0 ? <span className="text-accent">Grátis</span> : formatBRL(shipping)}
                     </dd>
                   </div>
-                <div className="border-t border-border pt-3">
-                  <div className="flex items-end justify-between">
-                    <dt className="font-medium">Total</dt>
-                    <dd className="font-display text-2xl font-semibold">{formatBRL(total)}</dd>
+                  <div className="border-t border-border pt-3">
+                    <div className="flex items-end justify-between">
+                      <dt className="font-medium">Total</dt>
+                      <dd className="font-display text-2xl font-semibold">{formatBRL(total)}</dd>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      em até 6× sem juros · 5% off no PIX
+                    </p>
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    em até 6× sem juros · 5% off no PIX
-                  </p>
-                </div>
-              </dl>
+                </dl>
 
               <button className="mt-6 w-full rounded-full bg-foreground py-3.5 text-sm font-medium text-background transition hover:bg-primary">
                 Finalizar compra
