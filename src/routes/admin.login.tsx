@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Lock, Mail, Sparkles, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/login")({
   component: AdminLoginPage,
