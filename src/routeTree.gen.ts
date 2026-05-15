@@ -24,6 +24,7 @@ import { Route as AdminProdutosRouteImport } from './routes/admin.produtos'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
+import { Route as AdminDestaquesRouteImport } from './routes/admin.destaques'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 
 const SobreRoute = SobreRouteImport.update({
@@ -101,6 +102,11 @@ const AdminHomeRoute = AdminHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDestaquesRoute = AdminDestaquesRouteImport.update({
+  id: '/destaques',
+  path: '/destaques',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
   id: '/clientes',
   path: '/clientes',
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/minha-conta': typeof MinhaContaRoute
   '/sobre': typeof SobreRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/minha-conta': typeof MinhaContaRoute
   '/sobre': typeof SobreRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/minha-conta': typeof MinhaContaRoute
   '/sobre': typeof SobreRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/sobre'
     | '/admin/clientes'
+    | '/admin/destaques'
     | '/admin/home'
     | '/admin/login'
     | '/admin/pedidos'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/sobre'
     | '/admin/clientes'
+    | '/admin/destaques'
     | '/admin/home'
     | '/admin/login'
     | '/admin/pedidos'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/sobre'
     | '/admin/clientes'
+    | '/admin/destaques'
     | '/admin/home'
     | '/admin/login'
     | '/admin/pedidos'
@@ -337,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminHomeRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/destaques': {
+      id: '/admin/destaques'
+      path: '/destaques'
+      fullPath: '/admin/destaques'
+      preLoaderRoute: typeof AdminDestaquesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/clientes': {
       id: '/admin/clientes'
       path: '/clientes'
@@ -349,6 +368,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminClientesRoute: typeof AdminClientesRoute
+  AdminDestaquesRoute: typeof AdminDestaquesRoute
   AdminHomeRoute: typeof AdminHomeRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
@@ -358,6 +378,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminClientesRoute: AdminClientesRoute,
+  AdminDestaquesRoute: AdminDestaquesRoute,
   AdminHomeRoute: AdminHomeRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPedidosRoute: AdminPedidosRoute,
