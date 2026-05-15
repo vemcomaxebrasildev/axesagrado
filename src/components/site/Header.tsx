@@ -1,24 +1,35 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ShoppingBag, Search, Menu, X, Package } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/contexts/CartContext";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
+type NavItem = { to: string; label: string; visible?: boolean };
 
-const nav = [
-  { to: "/", label: "Início" },
-  { to: "/catalogo", label: "Catálogo" },
-  { to: "/conga", label: "Monte seu Congá" },
-  { to: "/kits", label: "Kits Sagrados" },
-  { to: "/catalogo?cat=pretos-velhos", label: "Pretos Velhos" },
-  { to: "/sobre", label: "A Casa" },
-  { to: "/minha-conta", label: "Meus pedidos" },
+const defaultNav: NavItem[] = [
+  { to: "/", label: "Início", visible: true },
+  { to: "/catalogo", label: "Catálogo", visible: true },
+  { to: "/conga", label: "Monte seu Congá", visible: true },
+  { to: "/kits", label: "Kits Sagrados", visible: true },
+  { to: "/catalogo?cat=pretos-velhos", label: "Pretos Velhos", visible: true },
+  { to: "/sobre", label: "A Casa", visible: true },
+  { to: "/minha-conta", label: "Meus pedidos", visible: true },
 ];
 
 export function Header() {
   const { count } = useCart();
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
+  const { data: navData } = useQuery({
+    queryKey: ["home_content", "nav_menu"],
+    queryFn: async () => {
+      const { data } = await supabase.from("home_content").select("value").eq("key", "nav_menu").maybeSingle();
+      return (data?.value as NavItem[] | null) ?? defaultNav;
+    },
+  });
+  const nav = (navData ?? defaultNav).filter((n) => n.visible !== false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
