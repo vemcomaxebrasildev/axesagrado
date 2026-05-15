@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Sparkles, Flame, Leaf } from "lucide-react";
 import hero from "@/assets/hero-altar.jpg";
+import congaBanner from "@/assets/conga-banner.jpg";
 import { ProductCard } from "@/components/site/ProductCard";
 import { categories, products } from "@/data/products";
 
@@ -136,6 +137,42 @@ function HomePage() {
             <ProductCard key={p.slug} product={p} />
           ))}
         </div>
+      </section>
+
+      {/* BANNER — Monte seu Congá */}
+      <section className="mx-auto max-w-7xl px-6 pb-20 md:px-8 md:pb-28">
+        <Link
+          to="/conga"
+          className="group relative block overflow-hidden rounded-2xl shadow-altar"
+        >
+          <img
+            src={congaBanner}
+            alt="Altar de Umbanda personalizado com imagens de Orixás, velas e ervas"
+            loading="lazy"
+            width={1600}
+            height={900}
+            className="h-[360px] w-full object-cover transition-transform duration-700 group-hover:scale-105 md:h-[480px]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-foreground/85 via-foreground/55 to-transparent" />
+          <div className="absolute inset-0 flex items-center">
+            <div className="max-w-xl px-6 py-10 md:px-12 md:py-14">
+              <span className="inline-flex items-center gap-2 rounded-full border border-background/25 bg-background/10 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-background backdrop-blur">
+                <Sparkles className="h-3 w-3" /> Exclusivo Axé Sagrado
+              </span>
+              <h2 className="mt-5 text-balance font-display text-3xl font-semibold leading-[1.05] text-background md:text-5xl">
+                Monte seu Congá <em className="not-italic text-primary">personalizado</em>.
+              </h2>
+              <p className="mt-4 max-w-md text-pretty text-sm leading-relaxed text-background/80 md:text-base">
+                Escolha entre Congás de 7, 14 ou 21 imagens e crie um altar único com as
+                entidades que te acompanham.
+              </p>
+              <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-medium text-foreground transition group-hover:bg-primary group-hover:text-primary-foreground">
+                Montar meu Congá
+                <ArrowUpRight className="h-4 w-4 transition group-hover:rotate-45" />
+              </span>
+            </div>
+          </div>
+        </Link>
       </section>
 
       {/* CATEGORIAS — magazine */}
