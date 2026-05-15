@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Sparkles, Flame, Leaf } from "lucide-react";
 import hero from "@/assets/hero-altar.jpg";
+import congaBanner from "@/assets/conga-banner.jpg";
 import { ProductCard } from "@/components/site/ProductCard";
 import { categories, products } from "@/data/products";
 
