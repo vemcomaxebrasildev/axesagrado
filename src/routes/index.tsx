@@ -112,6 +112,32 @@ function HomePage() {
         </div>
       </section>
 
+      {/* DESTAQUES */}
+      <section className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              Em destaque
+            </p>
+            <h2 className="mt-3 max-w-xl text-balance font-display text-3xl font-semibold md:text-5xl">
+              Peças escolhidas com axé.
+            </h2>
+          </div>
+          <Link
+            to="/catalogo"
+            className="hidden items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground md:inline-flex"
+          >
+            Ver tudo <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-4">
+          {featured.map((p) => (
+            <ProductCard key={p.slug} product={p} />
+          ))}
+        </div>
+      </section>
+
       {/* CATEGORIAS — magazine */}
       <section className="border-y border-border/60 bg-card/40">
         <div className="mx-auto max-w-7xl px-6 py-16 md:px-8 md:py-20">
@@ -158,32 +184,6 @@ function HomePage() {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* DESTAQUES */}
-      <section className="mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-              Em destaque
-            </p>
-            <h2 className="mt-3 max-w-xl text-balance font-display text-3xl font-semibold md:text-5xl">
-              Peças escolhidas com axé.
-            </h2>
-          </div>
-          <Link
-            to="/catalogo"
-            className="hidden items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground md:inline-flex"
-          >
-            Ver tudo <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-4">
-          {featured.map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
         </div>
       </section>
 
