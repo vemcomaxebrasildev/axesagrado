@@ -67,8 +67,77 @@ function AdminHome() {
       </div>
       <BannerSection />
       <HeroSection />
+      <NavMenuSection />
       <TestimonialsSection />
     </div>
+  );
+}
+
+type NavItem = { to: string; label: string; visible: boolean };
+
+const defaultNav: NavItem[] = [
+  { to: "/", label: "Início", visible: true },
+  { to: "/catalogo", label: "Catálogo", visible: true },
+  { to: "/conga", label: "Monte seu Congá", visible: true },
+  { to: "/kits", label: "Kits Sagrados", visible: true },
+  { to: "/catalogo?cat=pretos-velhos", label: "Pretos Velhos", visible: true },
+  { to: "/sobre", label: "A Casa", visible: true },
+  { to: "/minha-conta", label: "Meus pedidos", visible: true },
+];
+
+function NavMenuSection() {
+  const { data, isLoading, save } = useHomeKey<NavItem[]>("nav_menu", defaultNav);
+  const [items, setItems] = useState<NavItem[]>(defaultNav);
+  useEffect(() => { if (data) setItems(data.map((i) => ({ ...i, visible: i.visible !== false }))); }, [data]);
+
+  if (isLoading) return <Card title="Menu da home"><Loader2 className="h-4 w-4 animate-spin" /></Card>;
+
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir;
+    if (j < 0 || j >= items.length) return;
+    const next = [...items];
+    [next[i], next[j]] = [next[j], next[i]];
+    setItems(next);
+  };
+  const update = (i: number, patch: Partial<NavItem>) =>
+    setItems(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+  const remove = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+  const add = () => setItems([...items, { label: "Novo item", to: "/", visible: true }]);
+
+  return (
+    <Card title="Menu da home" subtitle="Edite, reordene e controle a visibilidade dos itens do menu do cabeçalho.">
+      <form onSubmit={(e) => { e.preventDefault(); save.mutate(items); }} className="space-y-3">
+        {items.map((it, i) => (
+          <div key={i} className="grid grid-cols-[auto_1fr_1fr_auto_auto] items-center gap-2 rounded-xl border border-border bg-background p-2">
+            <div className="flex flex-col">
+              <button type="button" onClick={() => move(i, -1)} disabled={i === 0}
+                className="grid h-6 w-6 place-items-center rounded text-muted-foreground hover:bg-muted disabled:opacity-30">
+                <ArrowUp className="h-3 w-3" />
+              </button>
+              <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1}
+                className="grid h-6 w-6 place-items-center rounded text-muted-foreground hover:bg-muted disabled:opacity-30">
+                <ArrowDown className="h-3 w-3" />
+              </button>
+            </div>
+            <input className={input} placeholder="Rótulo" value={it.label} onChange={(e) => update(i, { label: e.target.value })} />
+            <input className={input} placeholder="/caminho" value={it.to} onChange={(e) => update(i, { to: e.target.value })} />
+            <button type="button" onClick={() => update(i, { visible: !it.visible })} title={it.visible ? "Visível" : "Oculto"}
+              className={`grid h-9 w-9 place-items-center rounded-lg ${it.visible ? "text-foreground hover:bg-muted" : "text-muted-foreground hover:bg-muted"}`}>
+              {it.visible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            </button>
+            <button type="button" onClick={() => remove(i)}
+              className="grid h-9 w-9 place-items-center rounded-lg text-destructive hover:bg-destructive/10">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={add}
+          className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground hover:border-foreground hover:text-foreground">
+          <Plus className="h-3 w-3" /> Adicionar item
+        </button>
+        <SaveButton pending={save.isPending} />
+      </form>
+    </Card>
   );
 }
 
