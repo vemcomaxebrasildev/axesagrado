@@ -23,6 +23,8 @@ import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as AdminProdutosRouteImport } from './routes/admin.produtos'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminHomeRouteImport } from './routes/admin.home'
+import { Route as AdminDestaquesRouteImport } from './routes/admin.destaques'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 
 const SobreRoute = SobreRouteImport.update({
@@ -95,6 +97,16 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminHomeRoute = AdminHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDestaquesRoute = AdminDestaquesRouteImport.update({
+  id: '/destaques',
+  path: '/destaques',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
   id: '/clientes',
   path: '/clientes',
@@ -112,6 +124,8 @@ export interface FileRoutesByFullPath {
   '/minha-conta': typeof MinhaContaRoute
   '/sobre': typeof SobreRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/destaques': typeof AdminDestaquesRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
@@ -128,6 +142,8 @@ export interface FileRoutesByTo {
   '/minha-conta': typeof MinhaContaRoute
   '/sobre': typeof SobreRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/destaques': typeof AdminDestaquesRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
@@ -146,6 +162,8 @@ export interface FileRoutesById {
   '/minha-conta': typeof MinhaContaRoute
   '/sobre': typeof SobreRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/destaques': typeof AdminDestaquesRoute
+  '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
@@ -165,6 +183,8 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/sobre'
     | '/admin/clientes'
+    | '/admin/destaques'
+    | '/admin/home'
     | '/admin/login'
     | '/admin/pedidos'
     | '/admin/produtos'
@@ -181,6 +201,8 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/sobre'
     | '/admin/clientes'
+    | '/admin/destaques'
+    | '/admin/home'
     | '/admin/login'
     | '/admin/pedidos'
     | '/admin/produtos'
@@ -198,6 +220,8 @@ export interface FileRouteTypes {
     | '/minha-conta'
     | '/sobre'
     | '/admin/clientes'
+    | '/admin/destaques'
+    | '/admin/home'
     | '/admin/login'
     | '/admin/pedidos'
     | '/admin/produtos'
@@ -318,6 +342,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/home': {
+      id: '/admin/home'
+      path: '/home'
+      fullPath: '/admin/home'
+      preLoaderRoute: typeof AdminHomeRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/destaques': {
+      id: '/admin/destaques'
+      path: '/destaques'
+      fullPath: '/admin/destaques'
+      preLoaderRoute: typeof AdminDestaquesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/clientes': {
       id: '/admin/clientes'
       path: '/clientes'
@@ -330,6 +368,8 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminClientesRoute: typeof AdminClientesRoute
+  AdminDestaquesRoute: typeof AdminDestaquesRoute
+  AdminHomeRoute: typeof AdminHomeRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProdutosRoute: typeof AdminProdutosRoute
@@ -338,6 +378,8 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminClientesRoute: AdminClientesRoute,
+  AdminDestaquesRoute: AdminDestaquesRoute,
+  AdminHomeRoute: AdminHomeRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPedidosRoute: AdminPedidosRoute,
   AdminProdutosRoute: AdminProdutosRoute,

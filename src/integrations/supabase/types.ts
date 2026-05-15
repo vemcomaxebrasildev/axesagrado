@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      home_content: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           id: string
@@ -101,6 +119,8 @@ export type Database = {
           description: string | null
           dimensions: string | null
           entity: string | null
+          featured: boolean
+          featured_position: number
           id: string
           image: string | null
           images: string[]
@@ -123,6 +143,8 @@ export type Database = {
           description?: string | null
           dimensions?: string | null
           entity?: string | null
+          featured?: boolean
+          featured_position?: number
           id?: string
           image?: string | null
           images?: string[]
@@ -145,6 +167,8 @@ export type Database = {
           description?: string | null
           dimensions?: string | null
           entity?: string | null
+          featured?: boolean
+          featured_position?: number
           id?: string
           image?: string | null
           images?: string[]
@@ -182,6 +206,36 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          active: boolean
+          author: string
+          created_at: string
+          id: string
+          position: number
+          quote: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          author: string
+          created_at?: string
+          id?: string
+          position?: number
+          quote: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          author?: string
+          created_at?: string
+          id?: string
+          position?: number
+          quote?: string
+          updated_at?: string
         }
         Relationships: []
       }
