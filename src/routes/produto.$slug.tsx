@@ -1,10 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Star, Truck, Shield, Sparkles, Plus, Minus } from "lucide-react";
+import { ArrowLeft, Star, Truck, Shield, Sparkles, Plus, Minus, Calculator } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { products, formatBRL } from "@/data/products";
 import { ProductCard } from "@/components/site/ProductCard";
 import { ShareMenu } from "@/components/site/ShareMenu";
 import { useCart } from "@/contexts/CartContext";
+
+type ShipOpt = { id: string; label: string; days: string; price: number };
+function calcShippingLocal(cep: string, price: number): ShipOpt[] {
+  const region = Number(cep.slice(0, 1) || "0");
+  const base = 18 + region * 2.4;
+  const free = price > 350;
+  return [
+    { id: "pac", label: "PAC", days: "7 a 12 dias úteis", price: free ? 0 : Math.round(base * 100) / 100 },
+    { id: "sedex", label: "SEDEX", days: "3 a 5 dias úteis", price: Math.round((base + 18) * 100) / 100 },
+    { id: "expresso", label: "Expresso 24h", days: "1 a 2 dias úteis", price: Math.round((base + 38) * 100) / 100 },
+  ];
+}
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
