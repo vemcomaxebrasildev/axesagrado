@@ -27,7 +27,7 @@ function calcShipping(cep: string, subtotal: number): ShippingOption[] {
 
 export const Route = createFileRoute("/carrinho")({
   head: () => ({
-    meta: [{ title: "Sacola — Axé Sagrado" }],
+    meta: [{ title: "Sacola — Vem com Axé" }],
   }),
   component: CartPage,
 });

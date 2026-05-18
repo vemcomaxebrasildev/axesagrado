@@ -5,12 +5,12 @@ import { formatBRL } from "@/data/products";
 export const Route = createFileRoute("/minha-conta")({
   head: () => ({
     meta: [
-      { title: "Meus Pedidos — Axé Sagrado" },
+      { title: "Meus Pedidos — Vem com Axé" },
       {
         name: "description",
-        content: "Acompanhe seus pedidos, endereços e favoritos na Axé Sagrado.",
+        content: "Acompanhe seus pedidos, endereços e favoritos na Vem com Axé.",
       },
-      { property: "og:title", content: "Meus Pedidos — Axé Sagrado" },
+      { property: "og:title", content: "Meus Pedidos — Vem com Axé" },
       {
         property: "og:description",
         content: "Área do cliente: histórico de pedidos e dados pessoais.",

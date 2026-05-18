@@ -7,13 +7,13 @@ import { useCart } from "@/contexts/CartContext";
 export const Route = createFileRoute("/kits")({
   head: () => ({
     meta: [
-      { title: "Kits Sagrados — Axé Sagrado" },
+      { title: "Kits Sagrados — Vem com Axé" },
       {
         name: "description",
         content:
           "Kits prontos de Umbanda: Força da Esquerda, Energia das Águas, Mata Sagrada e mais. Tudo curado para firmar seu axé.",
       },
-      { property: "og:title", content: "Kits Sagrados — Axé Sagrado" },
+      { property: "og:title", content: "Kits Sagrados — Vem com Axé" },
       {
         property: "og:description",
         content: "Kits curados com 7 imagens cada para sua casa de axé.",

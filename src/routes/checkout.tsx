@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: "Finalizar pedido — Axé Sagrado" },
+      { title: "Finalizar pedido — Vem com Axé" },
       { name: "description", content: "Finalize sua compra com segurança." },
     ],
   }),

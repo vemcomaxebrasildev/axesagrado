@@ -53,7 +53,7 @@ function AdminLayout() {
           <div className="flex h-16 items-center gap-2 border-b border-border px-6">
             <Sparkles className="h-5 w-5 text-primary" />
             <div>
-              <p className="font-display text-sm font-semibold">Axé Sagrado</p>
+              <p className="font-display text-sm font-semibold">Vem com Axé</p>
               <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 Admin
               </p>

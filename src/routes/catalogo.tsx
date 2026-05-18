@@ -14,9 +14,9 @@ export const Route = createFileRoute("/catalogo")({
   }),
   head: () => ({
     meta: [
-      { title: "Catálogo — Axé Sagrado" },
+      { title: "Catálogo — Vem com Axé" },
       { name: "description", content: "Catálogo completo de imagens, guias, velas e artigos ritualísticos de Umbanda." },
-      { property: "og:title", content: "Catálogo de Umbanda — Axé Sagrado" },
+      { property: "og:title", content: "Catálogo de Umbanda — Vem com Axé" },
     ],
   }),
   component: CatalogPage,
