@@ -1,10 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Star, Truck, Shield, Sparkles, Plus, Minus } from "lucide-react";
+import { ArrowLeft, Star, Truck, Shield, Sparkles, Plus, Minus, Calculator } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { products, formatBRL } from "@/data/products";
 import { ProductCard } from "@/components/site/ProductCard";
 import { ShareMenu } from "@/components/site/ShareMenu";
 import { useCart } from "@/contexts/CartContext";
+
+type ShipOpt = { id: string; label: string; days: string; price: number };
+function calcShippingLocal(cep: string, price: number): ShipOpt[] {
+  const region = Number(cep.slice(0, 1) || "0");
+  const base = 18 + region * 2.4;
+  const free = price > 350;
+  return [
+    { id: "pac", label: "PAC", days: "7 a 12 dias úteis", price: free ? 0 : Math.round(base * 100) / 100 },
+    { id: "sedex", label: "SEDEX", days: "3 a 5 dias úteis", price: Math.round((base + 18) * 100) / 100 },
+    { id: "expresso", label: "Expresso 24h", days: "1 a 2 dias úteis", price: Math.round((base + 38) * 100) / 100 },
+  ];
+}
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
@@ -44,6 +57,26 @@ function ProductPage() {
   const { product } = Route.useLoaderData();
   const { add } = useCart();
   const [qty, setQty] = useState(1);
+  const [cep, setCep] = useState("");
+  const [shipOpts, setShipOpts] = useState<ShipOpt[] | null>(null);
+  const [shipLoading, setShipLoading] = useState(false);
+
+  const handleCalcShip = async () => {
+    const digits = cep.replace(/\D/g, "");
+    if (digits.length !== 8) {
+      toast.error("CEP inválido", { description: "Informe um CEP com 8 dígitos." });
+      return;
+    }
+    setShipLoading(true);
+    try {
+      // Simulação local — substitua por chamada à API configurada no admin.
+      const opts = calcShippingLocal(digits, product.price * qty);
+      setShipOpts(opts);
+      toast.success("Frete calculado", { description: `Para ${digits.slice(0, 5)}-${digits.slice(5)}` });
+    } finally {
+      setShipLoading(false);
+    }
+  };
 
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 4);
   const installments = (product.price / 6).toFixed(2).replace(".", ",");
@@ -117,6 +150,7 @@ function ProductPage() {
           <div className="mt-8 flex items-center gap-3">
             <div className="inline-flex items-center rounded-full border border-border bg-card">
               <button
+                type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 className="grid h-11 w-11 place-items-center text-foreground/70 hover:text-foreground"
                 aria-label="Diminuir"
@@ -125,6 +159,7 @@ function ProductPage() {
               </button>
               <span className="w-8 text-center text-sm font-medium">{qty}</span>
               <button
+                type="button"
                 onClick={() => setQty((q) => q + 1)}
                 className="grid h-11 w-11 place-items-center text-foreground/70 hover:text-foreground"
                 aria-label="Aumentar"
@@ -133,6 +168,7 @@ function ProductPage() {
               </button>
             </div>
             <button
+              type="button"
               onClick={() => add(product, qty)}
               className="flex-1 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-primary"
             >
@@ -143,6 +179,56 @@ function ProductPage() {
           <div className="mt-6">
             <ShareMenu slug={product.slug} title={product.name} variant="inline" />
           </div>
+
+          {/* Cálculo de frete */}
+          <div className="mt-8 rounded-2xl border border-border bg-card p-5 shadow-soft">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Calculator className="h-4 w-4 text-accent" /> Calcular frete e prazo
+            </div>
+            <div className="mt-3 flex gap-2">
+              <input
+                inputMode="numeric"
+                maxLength={9}
+                placeholder="00000-000"
+                value={cep}
+                onChange={(e) => {
+                  const v = e.target.value.replace(/\D/g, "").slice(0, 8);
+                  setCep(v.length > 5 ? `${v.slice(0, 5)}-${v.slice(5)}` : v);
+                }}
+                className="flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleCalcShip}
+                disabled={shipLoading}
+                className="rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background hover:bg-primary disabled:opacity-60"
+              >
+                {shipLoading ? "Calculando..." : "Calcular"}
+              </button>
+            </div>
+            {shipOpts && (
+              <ul className="mt-3 space-y-1.5">
+                {shipOpts.map((o) => (
+                  <li
+                    key={o.id}
+                    className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm"
+                  >
+                    <span>
+                      <span className="font-medium">{o.label}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">{o.days}</span>
+                    </span>
+                    <span className="font-medium">
+                      {o.price === 0 ? <span className="text-accent">Grátis</span> : formatBRL(o.price)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Não sei meu CEP — <a href="https://buscacepinter.correios.com.br/" target="_blank" rel="noreferrer" className="underline">consultar</a>
+            </p>
+          </div>
+
 
           <ul className="mt-8 space-y-3 border-t border-border pt-6 text-sm">
             <li className="flex items-center gap-3 text-foreground/85">

@@ -143,6 +143,7 @@ function CartPage() {
                     <div className="mt-3 flex items-end justify-between gap-4">
                       <div className="inline-flex items-center rounded-full border border-border">
                         <button
+                          type="button"
                           onClick={() => setQty(product.slug, qty - 1)}
                           className="grid h-9 w-9 place-items-center text-foreground/70 hover:text-foreground"
                         >
@@ -150,6 +151,7 @@ function CartPage() {
                         </button>
                         <span className="w-7 text-center text-sm font-medium">{qty}</span>
                         <button
+                          type="button"
                           onClick={() => setQty(product.slug, qty + 1)}
                           className="grid h-9 w-9 place-items-center text-foreground/70 hover:text-foreground"
                         >
