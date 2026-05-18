@@ -57,6 +57,26 @@ function ProductPage() {
   const { product } = Route.useLoaderData();
   const { add } = useCart();
   const [qty, setQty] = useState(1);
+  const [cep, setCep] = useState("");
+  const [shipOpts, setShipOpts] = useState<ShipOpt[] | null>(null);
+  const [shipLoading, setShipLoading] = useState(false);
+
+  const handleCalcShip = async () => {
+    const digits = cep.replace(/\D/g, "");
+    if (digits.length !== 8) {
+      toast.error("CEP inválido", { description: "Informe um CEP com 8 dígitos." });
+      return;
+    }
+    setShipLoading(true);
+    try {
+      // Simulação local — substitua por chamada à API configurada no admin.
+      const opts = calcShippingLocal(digits, product.price * qty);
+      setShipOpts(opts);
+      toast.success("Frete calculado", { description: `Para ${digits.slice(0, 5)}-${digits.slice(5)}` });
+    } finally {
+      setShipLoading(false);
+    }
+  };
 
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 4);
   const installments = (product.price / 6).toFixed(2).replace(".", ",");
