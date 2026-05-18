@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          description: string
+          expense_date: string
+          id: string
+          notes: string | null
+          order_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description?: string
+          expense_date?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       home_content: {
         Row: {
           key: string
@@ -81,9 +125,19 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone: string | null
+          delivered_at: string | null
           id: string
+          notes: string | null
+          paid_amount: number
+          paid_at: string | null
+          payment_method: string | null
+          payment_status: string
+          shipped_at: string | null
+          shipping_carrier: string | null
+          shipping_cost: number
           status: string
           total: number
+          tracking_code: string | null
           user_id: string | null
         }
         Insert: {
@@ -92,9 +146,19 @@ export type Database = {
           customer_email: string
           customer_name: string
           customer_phone?: string | null
+          delivered_at?: string | null
           id?: string
+          notes?: string | null
+          paid_amount?: number
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          shipped_at?: string | null
+          shipping_carrier?: string | null
+          shipping_cost?: number
           status?: string
           total?: number
+          tracking_code?: string | null
           user_id?: string | null
         }
         Update: {
@@ -103,9 +167,19 @@ export type Database = {
           customer_email?: string
           customer_name?: string
           customer_phone?: string | null
+          delivered_at?: string | null
           id?: string
+          notes?: string | null
+          paid_amount?: number
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          shipped_at?: string | null
+          shipping_carrier?: string | null
+          shipping_cost?: number
           status?: string
           total?: number
+          tracking_code?: string | null
           user_id?: string | null
         }
         Relationships: []

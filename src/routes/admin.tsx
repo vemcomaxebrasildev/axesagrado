@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, Home, Star } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, Home, Star, Wallet } from "lucide-react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,7 @@ const NAV = [
   { to: "/admin/destaques", label: "Destaques", icon: Star },
   { to: "/admin/home", label: "Home", icon: Home },
   { to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
+  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/clientes", label: "Clientes", icon: Users },
 ];
 
