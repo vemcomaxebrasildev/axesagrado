@@ -36,7 +36,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:h-20 md:px-8">
         <Link to="/" className="group flex items-center">
           <span className="flex flex-col leading-none">
-            <span className="font-display text-lg font-semibold tracking-tight">Axé Sagrado</span>
+            <span className="font-display text-lg font-semibold tracking-tight">Vem com Axé</span>
             <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               Casa de Umbanda
             </span>

@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/conga")({
   head: () => ({
     meta: [
-      { title: "Monte seu Congá — Axé Sagrado" },
+      { title: "Monte seu Congá — Vem com Axé" },
       {
         name: "description",
         content:
           "Monte o seu altar de Umbanda escolhendo entre Congás de 7, 14 ou 21 imagens das entidades.",
       },
-      { property: "og:title", content: "Monte seu Congá — Axé Sagrado" },
+      { property: "og:title", content: "Monte seu Congá — Vem com Axé" },
       {
         property: "og:description",
         content: "Crie um altar personalizado com as imagens das entidades que te acompanham.",

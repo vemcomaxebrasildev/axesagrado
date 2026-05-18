@@ -10,13 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Axé Sagrado — Imagens, guias e artigos de Umbanda" },
+      { title: "Vem com Axé — Imagens, guias e artigos de Umbanda" },
       {
         name: "description",
         content:
           "Catálogo espiritual de Umbanda: imagens de Orixás, Pretos Velhos, Caboclos, Pombagiras, guias, velas e ervas. Peças artesanais com envio para todo o Brasil.",
       },
-      { property: "og:title", content: "Axé Sagrado — Casa de Umbanda" },
+      { property: "og:title", content: "Vem com Axé — Casa de Umbanda" },
       { property: "og:image", content: hero },
     ],
   }),
@@ -300,7 +300,7 @@ function HomePage() {
               o sagrado encontrar a sua casa.
             </h2>
             <p className="mt-6 max-w-2xl text-pretty leading-relaxed text-background/75">
-              Cada peça do Axé Sagrado nasce do trabalho de artesãos brasileiros que carregam
+              Cada peça do Vem com Axé nasce do trabalho de artesãos brasileiros que carregam
               séculos de tradição em suas mãos. Selecionamos materiais nobres, respeitamos a
               simbologia de cada entidade e cuidamos para que a sua firmeza chegue intacta —
               em corpo e em axé.

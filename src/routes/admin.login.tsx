@@ -64,7 +64,7 @@ function AdminLoginPage() {
           <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-foreground text-background">
             <Sparkles className="h-5 w-5" />
           </div>
-          <h1 className="mt-4 font-display text-2xl font-semibold">Axé Sagrado · Admin</h1>
+          <h1 className="mt-4 font-display text-2xl font-semibold">Vem com Axé · Admin</h1>
           <p className="mt-1 text-sm text-muted-foreground">Entre para gerenciar o site</p>
         </div>
 

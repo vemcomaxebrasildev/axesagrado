@@ -4,8 +4,8 @@ import hero from "@/assets/hero-altar.jpg";
 export const Route = createFileRoute("/sobre")({
   head: () => ({
     meta: [
-      { title: "A Casa — Axé Sagrado" },
-      { name: "description", content: "Conheça a história e os valores da casa Axé Sagrado." },
+      { title: "A Casa — Vem com Axé" },
+      { name: "description", content: "Conheça a história e os valores da casa Vem com Axé." },
     ],
   }),
   component: () => (
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/sobre")({
             Onde o axé encontra <em className="not-italic text-primary">forma</em>.
           </h1>
           <p className="mt-6 text-pretty text-foreground/85">
-            O Axé Sagrado nasceu do desejo de aproximar irmãos de Umbanda do trabalho de
+            O Vem com Axé nasceu do desejo de aproximar irmãos de Umbanda do trabalho de
             artesãos brasileiros que dedicam suas vidas a esculpir o sagrado em barro,
             madeira, cera e contas.
           </p>
