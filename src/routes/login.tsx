@@ -7,7 +7,7 @@ import { lovable } from "@/integrations/lovable";
 
 type Search = { redirect?: string };
 
-export const Route = createFileRoute("/login")({
+export const Route = (createFileRoute as any)("/login")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     redirect: typeof s.redirect === "string" ? s.redirect : undefined,
   }),
