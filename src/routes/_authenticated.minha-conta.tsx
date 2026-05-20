@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Package, User, Heart, MapPin, ArrowRight, ShoppingBag } from "lucide-react";
 import { formatBRL } from "@/data/products";
 
-export const Route = createFileRoute("/minha-conta")({
+export const Route = (createFileRoute as any)("/_authenticated/minha-conta")({
   head: () => ({
     meta: [
       { title: "Meus Pedidos — Vem com Axé" },
