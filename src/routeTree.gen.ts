@@ -10,13 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
-import { Route as MinhaContaRouteImport } from './routes/minha-conta'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as KitsRouteImport } from './routes/kits'
 import { Route as CongaRouteImport } from './routes/conga'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as CarrinhoRouteImport } from './routes/carrinho'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
@@ -28,15 +29,16 @@ import { Route as AdminFreteRouteImport } from './routes/admin.frete'
 import { Route as AdminFinanceiroRouteImport } from './routes/admin.financeiro'
 import { Route as AdminDestaquesRouteImport } from './routes/admin.destaques'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
+import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated.minha-conta'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MinhaContaRoute = MinhaContaRouteImport.update({
-  id: '/minha-conta',
-  path: '/minha-conta',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KitsRoute = KitsRouteImport.update({
@@ -67,6 +69,10 @@ const CarrinhoRoute = CarrinhoRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -124,6 +130,11 @@ const AdminClientesRoute = AdminClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
+  id: '/minha-conta',
+  path: '/minha-conta',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -133,8 +144,9 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/conga': typeof CongaRoute
   '/kits': typeof KitsRoute
-  '/minha-conta': typeof MinhaContaRoute
+  '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
+  '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/financeiro': typeof AdminFinanceiroRoute
@@ -153,8 +165,9 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/conga': typeof CongaRoute
   '/kits': typeof KitsRoute
-  '/minha-conta': typeof MinhaContaRoute
+  '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
+  '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/financeiro': typeof AdminFinanceiroRoute
@@ -169,14 +182,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/carrinho': typeof CarrinhoRoute
   '/catalogo': typeof CatalogoRoute
   '/checkout': typeof CheckoutRoute
   '/conga': typeof CongaRoute
   '/kits': typeof KitsRoute
-  '/minha-conta': typeof MinhaContaRoute
+  '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
+  '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/financeiro': typeof AdminFinanceiroRoute
@@ -198,8 +213,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/conga'
     | '/kits'
-    | '/minha-conta'
+    | '/login'
     | '/sobre'
+    | '/minha-conta'
     | '/admin/clientes'
     | '/admin/destaques'
     | '/admin/financeiro'
@@ -218,8 +234,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/conga'
     | '/kits'
-    | '/minha-conta'
+    | '/login'
     | '/sobre'
+    | '/minha-conta'
     | '/admin/clientes'
     | '/admin/destaques'
     | '/admin/financeiro'
@@ -233,14 +250,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/admin'
     | '/carrinho'
     | '/catalogo'
     | '/checkout'
     | '/conga'
     | '/kits'
-    | '/minha-conta'
+    | '/login'
     | '/sobre'
+    | '/_authenticated/minha-conta'
     | '/admin/clientes'
     | '/admin/destaques'
     | '/admin/financeiro'
@@ -255,13 +274,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   CarrinhoRoute: typeof CarrinhoRoute
   CatalogoRoute: typeof CatalogoRoute
   CheckoutRoute: typeof CheckoutRoute
   CongaRoute: typeof CongaRoute
   KitsRoute: typeof KitsRoute
-  MinhaContaRoute: typeof MinhaContaRoute
+  LoginRoute: typeof LoginRoute
   SobreRoute: typeof SobreRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
@@ -275,11 +295,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/minha-conta': {
-      id: '/minha-conta'
-      path: '/minha-conta'
-      fullPath: '/minha-conta'
-      preLoaderRoute: typeof MinhaContaRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kits': {
@@ -322,6 +342,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -401,8 +428,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClientesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_authenticated/minha-conta': {
+      id: '/_authenticated/minha-conta'
+      path: '/minha-conta'
+      fullPath: '/minha-conta'
+      preLoaderRoute: typeof AuthenticatedMinhaContaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedMinhaContaRoute: typeof AuthenticatedMinhaContaRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedMinhaContaRoute: AuthenticatedMinhaContaRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminClientesRoute: typeof AdminClientesRoute
@@ -432,26 +478,17 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   CarrinhoRoute: CarrinhoRoute,
   CatalogoRoute: CatalogoRoute,
   CheckoutRoute: CheckoutRoute,
   CongaRoute: CongaRoute,
   KitsRoute: KitsRoute,
-  MinhaContaRoute: MinhaContaRoute,
+  LoginRoute: LoginRoute,
   SobreRoute: SobreRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

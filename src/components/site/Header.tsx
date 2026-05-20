@@ -1,9 +1,11 @@
-import { Link, useRouterState } from "@tanstack/react-router";
-import { ShoppingBag, Search, Menu, X, Package } from "lucide-react";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { ShoppingBag, Search, Menu, X, LogIn, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/contexts/CartContext";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type NavItem = { to: string; label: string; visible?: boolean };
@@ -22,6 +24,8 @@ export function Header() {
   const { count } = useCart();
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
+  const { isAuthed, email, logout } = useAdminAuth();
+  const navigate = useNavigate();
   const { data: navData } = useQuery({
     queryKey: ["home_content", "nav_menu"],
     queryFn: async () => {
@@ -30,6 +34,12 @@ export function Header() {
     },
   });
   const nav = (navData ?? defaultNav).filter((n) => n.visible !== false);
+
+  const handleLogout = async () => {
+    await logout();
+    toast.success("Você saiu.");
+    navigate({ to: "/" });
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
@@ -65,13 +75,33 @@ export function Header() {
           <button className="hidden h-10 w-10 items-center justify-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-foreground md:inline-flex">
             <Search className="h-4 w-4" />
           </button>
-          <Link
-            to="/minha-conta"
-            className="hidden h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-medium text-foreground/80 transition hover:border-foreground hover:text-foreground md:inline-flex"
-          >
-            <Package className="h-4 w-4" />
-            <span>Meus pedidos</span>
-          </Link>
+          {isAuthed ? (
+            <>
+              <Link
+                to={"/minha-conta" as any}
+                className="hidden h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-medium text-foreground/80 transition hover:border-foreground hover:text-foreground md:inline-flex"
+                title={email ?? ""}
+              >
+                <User className="h-4 w-4" />
+                <span className="max-w-[120px] truncate">{email?.split("@")[0] ?? "Conta"}</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="hidden h-10 w-10 items-center justify-center rounded-full text-foreground/70 hover:bg-muted hover:text-foreground md:inline-flex"
+                title="Sair"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </>
+          ) : (
+            <Link
+              to={"/login" as any}
+              className="hidden h-10 items-center gap-2 rounded-full border border-border px-4 text-sm font-medium text-foreground/80 transition hover:border-foreground hover:text-foreground md:inline-flex"
+            >
+              <LogIn className="h-4 w-4" />
+              <span>Entrar</span>
+            </Link>
+          )}
           <Link
             to="/carrinho"
             className="relative inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-medium text-background transition hover:opacity-90"
