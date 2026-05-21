@@ -24,13 +24,16 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as AdminProdutosRouteImport } from './routes/admin.produtos'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
+import { Route as AdminPaginasRouteImport } from './routes/admin.paginas'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminHomeRouteImport } from './routes/admin.home'
 import { Route as AdminFreteRouteImport } from './routes/admin.frete'
 import { Route as AdminFinanceiroRouteImport } from './routes/admin.financeiro'
 import { Route as AdminDestaquesRouteImport } from './routes/admin.destaques'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
+import { Route as AdminBrandingRouteImport } from './routes/admin.branding'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated.minha-conta'
+import { Route as AdminPaginasIdRouteImport } from './routes/admin.paginas.$id'
 
 const SuporteRoute = SuporteRouteImport.update({
   id: '/suporte',
@@ -106,6 +109,11 @@ const AdminPedidosRoute = AdminPedidosRouteImport.update({
   path: '/pedidos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPaginasRoute = AdminPaginasRouteImport.update({
+  id: '/paginas',
+  path: '/paginas',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -136,10 +144,20 @@ const AdminClientesRoute = AdminClientesRouteImport.update({
   path: '/clientes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBrandingRoute = AdminBrandingRouteImport.update({
+  id: '/branding',
+  path: '/branding',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
   id: '/minha-conta',
   path: '/minha-conta',
   getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AdminPaginasIdRoute = AdminPaginasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminPaginasRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -154,16 +172,19 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/suporte': typeof SuporteRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/admin/branding': typeof AdminBrandingRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/financeiro': typeof AdminFinanceiroRoute
   '/admin/frete': typeof AdminFreteRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/paginas': typeof AdminPaginasRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/paginas/$id': typeof AdminPaginasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -176,16 +197,19 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/suporte': typeof SuporteRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/admin/branding': typeof AdminBrandingRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/financeiro': typeof AdminFinanceiroRoute
   '/admin/frete': typeof AdminFreteRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/paginas': typeof AdminPaginasRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/paginas/$id': typeof AdminPaginasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -201,16 +225,19 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/suporte': typeof SuporteRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/admin/branding': typeof AdminBrandingRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
   '/admin/financeiro': typeof AdminFinanceiroRoute
   '/admin/frete': typeof AdminFreteRoute
   '/admin/home': typeof AdminHomeRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/paginas': typeof AdminPaginasRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/paginas/$id': typeof AdminPaginasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,16 +253,19 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/suporte'
     | '/minha-conta'
+    | '/admin/branding'
     | '/admin/clientes'
     | '/admin/destaques'
     | '/admin/financeiro'
     | '/admin/frete'
     | '/admin/home'
     | '/admin/login'
+    | '/admin/paginas'
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/produto/$slug'
     | '/admin/'
+    | '/admin/paginas/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -248,16 +278,19 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/suporte'
     | '/minha-conta'
+    | '/admin/branding'
     | '/admin/clientes'
     | '/admin/destaques'
     | '/admin/financeiro'
     | '/admin/frete'
     | '/admin/home'
     | '/admin/login'
+    | '/admin/paginas'
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/produto/$slug'
     | '/admin'
+    | '/admin/paginas/$id'
   id:
     | '__root__'
     | '/'
@@ -272,16 +305,19 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/suporte'
     | '/_authenticated/minha-conta'
+    | '/admin/branding'
     | '/admin/clientes'
     | '/admin/destaques'
     | '/admin/financeiro'
     | '/admin/frete'
     | '/admin/home'
     | '/admin/login'
+    | '/admin/paginas'
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/produto/$slug'
     | '/admin/'
+    | '/admin/paginas/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -406,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPedidosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/paginas': {
+      id: '/admin/paginas'
+      path: '/paginas'
+      fullPath: '/admin/paginas'
+      preLoaderRoute: typeof AdminPaginasRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/login'
@@ -448,12 +491,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClientesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/branding': {
+      id: '/admin/branding'
+      path: '/branding'
+      fullPath: '/admin/branding'
+      preLoaderRoute: typeof AdminBrandingRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_authenticated/minha-conta': {
       id: '/_authenticated/minha-conta'
       path: '/minha-conta'
       fullPath: '/minha-conta'
       preLoaderRoute: typeof AuthenticatedMinhaContaRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/admin/paginas/$id': {
+      id: '/admin/paginas/$id'
+      path: '/$id'
+      fullPath: '/admin/paginas/$id'
+      preLoaderRoute: typeof AdminPaginasIdRouteImport
+      parentRoute: typeof AdminPaginasRoute
     }
   }
 }
@@ -470,25 +527,41 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AdminPaginasRouteChildren {
+  AdminPaginasIdRoute: typeof AdminPaginasIdRoute
+}
+
+const AdminPaginasRouteChildren: AdminPaginasRouteChildren = {
+  AdminPaginasIdRoute: AdminPaginasIdRoute,
+}
+
+const AdminPaginasRouteWithChildren = AdminPaginasRoute._addFileChildren(
+  AdminPaginasRouteChildren,
+)
+
 interface AdminRouteChildren {
+  AdminBrandingRoute: typeof AdminBrandingRoute
   AdminClientesRoute: typeof AdminClientesRoute
   AdminDestaquesRoute: typeof AdminDestaquesRoute
   AdminFinanceiroRoute: typeof AdminFinanceiroRoute
   AdminFreteRoute: typeof AdminFreteRoute
   AdminHomeRoute: typeof AdminHomeRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminPaginasRoute: typeof AdminPaginasRouteWithChildren
   AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProdutosRoute: typeof AdminProdutosRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBrandingRoute: AdminBrandingRoute,
   AdminClientesRoute: AdminClientesRoute,
   AdminDestaquesRoute: AdminDestaquesRoute,
   AdminFinanceiroRoute: AdminFinanceiroRoute,
   AdminFreteRoute: AdminFreteRoute,
   AdminHomeRoute: AdminHomeRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminPaginasRoute: AdminPaginasRouteWithChildren,
   AdminPedidosRoute: AdminPedidosRoute,
   AdminProdutosRoute: AdminProdutosRoute,
   AdminIndexRoute: AdminIndexRoute,

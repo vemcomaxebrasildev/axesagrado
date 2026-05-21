@@ -59,13 +59,13 @@ function AdminBrandingPage() {
     setSaving(true);
     try {
       const rows = [
-        { key: "brand", value: brand },
-        { key: "contact", value: contact },
-        { key: "social", value: social },
-        { key: "seo_defaults", value: seo },
+        { key: "brand", value: brand as unknown as Record<string, unknown> },
+        { key: "contact", value: contact as unknown as Record<string, unknown> },
+        { key: "social", value: social as unknown as Record<string, unknown> },
+        { key: "seo_defaults", value: seo as unknown as Record<string, unknown> },
       ];
       for (const row of rows) {
-        const { error } = await supabase.from("site_settings").upsert(row);
+        const { error } = await supabase.from("site_settings").upsert(row as never);
         if (error) throw error;
       }
       toast.success("Configurações salvas.");
