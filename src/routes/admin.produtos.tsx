@@ -92,9 +92,11 @@ function AdminProdutos() {
       if (p.id) {
         const { error } = await supabase.from("products").update(payload).eq("id", p.id);
         if (error) throw error;
+        await recordAudit({ action: "update", entityType: "product", entityId: p.id, diff: payload });
       } else {
-        const { error } = await supabase.from("products").insert(payload);
+        const { data, error } = await supabase.from("products").insert(payload).select("id").single();
         if (error) throw error;
+        await recordAudit({ action: "create", entityType: "product", entityId: data?.id, diff: payload });
       }
     },
     onSuccess: () => {
