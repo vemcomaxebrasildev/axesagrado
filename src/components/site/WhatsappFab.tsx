@@ -1,13 +1,16 @@
 import { MessageCircle } from "lucide-react";
+import { useBranding } from "@/hooks/useBranding";
 
 export function WhatsappFab() {
+  const { settings } = useBranding();
+  const number = settings.contact.whatsapp || "5511999990000";
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
       <span className="hidden sm:inline-flex animate-pulse items-center rounded-full bg-accent px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent-foreground shadow-altar">
         Compre pelo WhatsApp
       </span>
       <a
-        href="https://wa.me/5511999990000?text=Ol%C3%A1!%20Gostaria%20de%20saber%20sobre%20um%20produto."
+        href={`https://wa.me/${number}?text=Ol%C3%A1!%20Gostaria%20de%20saber%20sobre%20um%20produto.`}
         target="_blank"
         rel="noreferrer"
         aria-label="Compre pelo WhatsApp"

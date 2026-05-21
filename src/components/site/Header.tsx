@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useCart } from "@/contexts/CartContext";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { useBranding } from "@/hooks/useBranding";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
   const { isAuthed, email, logout } = useAdminAuth();
+  const { settings } = useBranding();
   const navigate = useNavigate();
   const { data: navData } = useQuery({
     queryKey: ["home_content", "nav_menu"],
@@ -44,11 +46,14 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 md:h-20 md:px-8">
-        <Link to="/" className="group flex items-center">
+        <Link to="/" className="group flex items-center gap-3">
+          {settings.brand.logo_url && (
+            <img src={settings.brand.logo_url} alt={settings.brand.name} className="h-10 w-10 rounded-full object-cover" />
+          )}
           <span className="flex flex-col leading-none">
-            <span className="font-display text-lg font-semibold tracking-tight">Vem com Axé</span>
+            <span className="font-display text-lg font-semibold tracking-tight">{settings.brand.name}</span>
             <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Casa de Umbanda
+              {settings.brand.tagline}
             </span>
           </span>
         </Link>
