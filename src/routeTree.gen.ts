@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SuporteRouteImport } from './routes/suporte'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KitsRouteImport } from './routes/kits'
@@ -31,6 +32,11 @@ import { Route as AdminDestaquesRouteImport } from './routes/admin.destaques'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated.minha-conta'
 
+const SuporteRoute = SuporteRouteImport.update({
+  id: '/suporte',
+  path: '/suporte',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/kits': typeof KitsRoute
   '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
+  '/suporte': typeof SuporteRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/kits': typeof KitsRoute
   '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
+  '/suporte': typeof SuporteRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/kits': typeof KitsRoute
   '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
+  '/suporte': typeof SuporteRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/kits'
     | '/login'
     | '/sobre'
+    | '/suporte'
     | '/minha-conta'
     | '/admin/clientes'
     | '/admin/destaques'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/kits'
     | '/login'
     | '/sobre'
+    | '/suporte'
     | '/minha-conta'
     | '/admin/clientes'
     | '/admin/destaques'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/kits'
     | '/login'
     | '/sobre'
+    | '/suporte'
     | '/_authenticated/minha-conta'
     | '/admin/clientes'
     | '/admin/destaques'
@@ -283,11 +295,19 @@ export interface RootRouteChildren {
   KitsRoute: typeof KitsRoute
   LoginRoute: typeof LoginRoute
   SobreRoute: typeof SobreRoute
+  SuporteRoute: typeof SuporteRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/suporte': {
+      id: '/suporte'
+      path: '/suporte'
+      fullPath: '/suporte'
+      preLoaderRoute: typeof SuporteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -487,18 +507,9 @@ const rootRouteChildren: RootRouteChildren = {
   KitsRoute: KitsRoute,
   LoginRoute: LoginRoute,
   SobreRoute: SobreRoute,
+  SuporteRoute: SuporteRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
