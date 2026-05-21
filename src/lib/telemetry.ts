@@ -27,7 +27,7 @@ export async function recordAudit(params: {
       action: params.action,
       entity_type: params.entityType,
       entity_id: params.entityId ?? null,
-      diff: params.diff ?? null,
+      diff: (params.diff ?? null) as never,
     });
   } catch (err) {
     // silencioso — telemetria não pode derrubar a UI
@@ -47,7 +47,7 @@ export async function recordSystemLog(params: {
       level: params.level ?? "info",
       source: params.source ?? "client",
       message: params.message,
-      context: params.context ?? null,
+      context: (params.context ?? null) as never,
       user_id: userData.user?.id ?? null,
     });
   } catch (err) {
