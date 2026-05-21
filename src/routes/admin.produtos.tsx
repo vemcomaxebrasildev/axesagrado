@@ -111,6 +111,7 @@ function AdminProdutos() {
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("products").delete().eq("id", id);
       if (error) throw error;
+      await recordAudit({ action: "delete", entityType: "product", entityId: id });
     },
     onSuccess: () => {
       toast.success("Produto excluído");
