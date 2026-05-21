@@ -19,6 +19,7 @@ const NAV = [
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/frete", label: "Frete", icon: Truck },
   { to: "/admin/clientes", label: "Clientes", icon: Users },
+  { to: "/admin/saude", label: "Saúde", icon: Activity },
 ];
 
 function AdminLayout() {
