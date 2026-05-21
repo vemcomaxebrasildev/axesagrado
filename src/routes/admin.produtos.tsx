@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL } from "@/data/products";
+import { recordAudit } from "@/lib/telemetry";
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
@@ -91,9 +92,11 @@ function AdminProdutos() {
       if (p.id) {
         const { error } = await supabase.from("products").update(payload).eq("id", p.id);
         if (error) throw error;
+        await recordAudit({ action: "update", entityType: "product", entityId: p.id, diff: payload });
       } else {
-        const { error } = await supabase.from("products").insert(payload);
+        const { data, error } = await supabase.from("products").insert(payload).select("id").single();
         if (error) throw error;
+        await recordAudit({ action: "create", entityType: "product", entityId: data?.id, diff: payload });
       }
     },
     onSuccess: () => {
@@ -108,6 +111,7 @@ function AdminProdutos() {
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("products").delete().eq("id", id);
       if (error) throw error;
+      await recordAudit({ action: "delete", entityType: "product", entityId: id });
     },
     onSuccess: () => {
       toast.success("Produto excluído");
