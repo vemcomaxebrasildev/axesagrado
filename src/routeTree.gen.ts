@@ -22,6 +22,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
+import { Route as AdminSaudeRouteImport } from './routes/admin.saude'
 import { Route as AdminProdutosRouteImport } from './routes/admin.produtos'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminPaginasRouteImport } from './routes/admin.paginas'
@@ -98,6 +99,11 @@ const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSaudeRoute = AdminSaudeRouteImport.update({
+  id: '/saude',
+  path: '/saude',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminProdutosRoute = AdminProdutosRouteImport.update({
   id: '/produtos',
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/admin/paginas': typeof AdminPaginasRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
+  '/admin/saude': typeof AdminSaudeRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/paginas/$id': typeof AdminPaginasIdRoute
@@ -207,6 +214,7 @@ export interface FileRoutesByTo {
   '/admin/paginas': typeof AdminPaginasRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
+  '/admin/saude': typeof AdminSaudeRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin': typeof AdminIndexRoute
   '/admin/paginas/$id': typeof AdminPaginasIdRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/admin/paginas': typeof AdminPaginasRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
+  '/admin/saude': typeof AdminSaudeRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/paginas/$id': typeof AdminPaginasIdRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin/paginas'
     | '/admin/pedidos'
     | '/admin/produtos'
+    | '/admin/saude'
     | '/produto/$slug'
     | '/admin/'
     | '/admin/paginas/$id'
@@ -288,6 +298,7 @@ export interface FileRouteTypes {
     | '/admin/paginas'
     | '/admin/pedidos'
     | '/admin/produtos'
+    | '/admin/saude'
     | '/produto/$slug'
     | '/admin'
     | '/admin/paginas/$id'
@@ -315,6 +326,7 @@ export interface FileRouteTypes {
     | '/admin/paginas'
     | '/admin/pedidos'
     | '/admin/produtos'
+    | '/admin/saude'
     | '/produto/$slug'
     | '/admin/'
     | '/admin/paginas/$id'
@@ -427,6 +439,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/produto/$slug'
       preLoaderRoute: typeof ProdutoSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/saude': {
+      id: '/admin/saude'
+      path: '/saude'
+      fullPath: '/admin/saude'
+      preLoaderRoute: typeof AdminSaudeRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/produtos': {
       id: '/admin/produtos'
@@ -550,6 +569,7 @@ interface AdminRouteChildren {
   AdminPaginasRoute: typeof AdminPaginasRouteWithChildren
   AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProdutosRoute: typeof AdminProdutosRoute
+  AdminSaudeRoute: typeof AdminSaudeRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -564,6 +584,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPaginasRoute: AdminPaginasRouteWithChildren,
   AdminPedidosRoute: AdminPedidosRoute,
   AdminProdutosRoute: AdminProdutosRoute,
+  AdminSaudeRoute: AdminSaudeRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

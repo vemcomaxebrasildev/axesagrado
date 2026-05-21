@@ -8,6 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { CartProvider } from "@/contexts/CartContext";
@@ -18,6 +19,8 @@ import { WhatsappFab } from "@/components/site/WhatsappFab";
 import { CookieConsent } from "@/components/site/CookieConsent";
 import { BrandingApplier } from "@/components/site/BrandingApplier";
 import { Toaster } from "@/components/ui/sonner";
+import { recordPageView } from "@/lib/telemetry";
+import { initSentry } from "@/lib/sentry";
 
 function NotFoundComponent() {
   return (
