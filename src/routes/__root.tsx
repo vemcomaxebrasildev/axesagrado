@@ -15,6 +15,7 @@ import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsappFab } from "@/components/site/WhatsappFab";
+import { CookieConsent } from "@/components/site/CookieConsent";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -135,6 +136,7 @@ function RootComponent() {
             </main>
             {!isAdmin && <Footer />}
             {!isAdmin && <WhatsappFab />}
+            {!isAdmin && <CookieConsent />}
             <Toaster position="top-center" richColors />
           </div>
         </CartProvider>
