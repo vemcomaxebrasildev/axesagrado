@@ -129,6 +129,15 @@ function RootComponent() {
   const { location } = useRouterState();
   const isAdmin = location.pathname.startsWith("/admin");
 
+  useEffect(() => {
+    initSentry();
+  }, []);
+
+  useEffect(() => {
+    recordPageView(location.pathname);
+  }, [location.pathname]);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <AdminAuthProvider>
