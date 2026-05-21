@@ -1,54 +1,115 @@
-## Objetivo
-Substituir todos os dados mockados do painel `/admin` por persistência real no Lovable Cloud, com autenticação segura por papel (`admin`) e CRUDs completos.
 
-## Etapas
+## Visão geral
 
-### 1. Habilitar Lovable Cloud
-Provisionar banco, autenticação e storage do projeto.
+Transformar a loja em whitelabel (todo conteúdo editável pelo admin) e adicionar um painel de saúde do sistema com logs, métricas e auditoria, integrado ao Sentry para captura de erros em produção.
 
-### 2. Esquema do banco (migrations)
-Tabelas:
-- `profiles` (id, full_name, email, phone, created_at) — espelha `auth.users`
-- `user_roles` (id, user_id, role) com enum `app_role` (`admin`, `customer`) + função `has_role()` (security definer)
-- `products` (id, slug, name, category, description, price, stock, image, created_at, updated_at)
-- `orders` (id, user_id, customer_name, customer_email, customer_phone, total, status, address, created_at)
-- `order_items` (id, order_id, product_id, product_name, quantity, unit_price)
+---
 
-Trigger `handle_new_user` cria profile + role `customer` automaticamente. RLS:
-- `products`: SELECT público, INSERT/UPDATE/DELETE só admin
-- `orders`/`order_items`: usuário vê os próprios; admin vê todos
-- `profiles`: usuário vê o próprio; admin vê todos
-- `user_roles`: usuário vê os próprios; admin gerencia
+## Parte 1 — Whitelabel & CMS
 
-### 3. Seed
-Inserir os produtos atuais de `src/data/products.ts` na tabela `products`.
+### 1.1 Banco: novas tabelas
 
-### 4. Autenticação real
-- Substituir `AdminAuthContext` (localStorage) por sessão Supabase
-- Tela `/admin/login` usa `signInWithPassword`
-- Layout `/admin` checa role `admin` via `has_role()` — sem role redireciona pro login
-- Criar conta `tiladeira@gmail.com` / senha `1234` e atribuir role `admin` via SQL
+- **`site_settings`** (key/value JSON) — identidade visual e dados globais
+  - `brand` → `{ name, tagline, logo_url, favicon_url, primary_color, accent_color, font_heading, font_body }`
+  - `contact` → `{ whatsapp, phone, email, address, hours }`
+  - `social` → `{ instagram, facebook, youtube, tiktok }`
+  - `seo_defaults` → `{ title, description, og_image }`
 
-### 5. CRUDs do painel
-- **Produtos** (`/admin/produtos`): listar do BD, busca, criar/editar (dialog com formulário + upload de imagem ou URL), excluir com confirmação, alerta de estoque
-- **Pedidos** (`/admin/pedidos`): listar do BD, filtros, ver detalhes (drawer com itens), alterar status (select)
-- **Clientes** (`/admin/clientes`): listar de `profiles` com totais agregados de `orders`
-- **Dashboard** (`/admin/index`): stats reais (vendas do mês, pedidos, clientes, ticket médio) + últimos pedidos
+- **`pages`** — páginas dinâmicas (sobre, conga, kits, suporte, termos, privacidade, trocas)
+  - colunas: `slug`, `title`, `subtitle`, `hero_image`, `sections` (jsonb — array de blocos), `seo_title`, `seo_description`, `seo_og_image`, `published`, `updated_at`
+  - blocos suportados em `sections`: `{ type: "rich_text" | "image" | "cta" | "feature_grid" | "quote", ...campos }`
 
-### 6. Checkout integrado
-Atualizar `/checkout` pra gravar pedido real (`orders` + `order_items`) ao "finalizar".
+- **`audit_log`** — quem mudou o quê (preenche Parte 2.4)
 
-### 7. Limpar mocks
-Remover arrays hard-coded de `admin.*.tsx` e dados de exemplo.
+RLS: leitura pública em `site_settings` e `pages` (somente `published=true`); escrita só admin.
+
+### 1.2 Aplicação no frontend
+
+- Provider `BrandingProvider` no `__root.tsx` carrega `site_settings` via server function e injeta cores/fontes em CSS variables (`--primary`, fonte, etc.) e nome/logo no Header/Footer.
+- Páginas estáticas atuais (`sobre.tsx`, `conga.tsx`, `kits.tsx`, `suporte.tsx`) viram **renderers**: buscam `pages` por slug e renderizam os blocos.
+- `head()` de cada rota lê `seo_title`/`seo_description`/`seo_og_image` da página.
+- Footer, contato e WhatsApp FAB consomem `site_settings.contact` e `social`.
+
+### 1.3 Admin
+
+Novas telas:
+- **`/admin/branding`** — nome, logo (upload no bucket `product-media`), favicon, cores (color picker), fontes, contato, redes sociais, SEO padrão.
+- **`/admin/paginas`** — lista de páginas. Botão "Editar":
+  - Aba **Conteúdo**: campos estruturados (título, subtítulo, hero) + construtor de blocos (rich text com tiptap, imagem, CTA, grid de features, citação) — reordenar via drag-and-drop.
+  - Aba **SEO**: título, descrição, OG image.
+  - Toggle publicar/despublicar.
+
+Dependência nova: `@tiptap/react` + `@tiptap/starter-kit` para o rich text.
+
+---
+
+## Parte 2 — Saúde do sistema, logs e telemetria
+
+### 2.1 Sentry (erros em produção)
+
+- Instalar `@sentry/react`.
+- Inicializar no `__root.tsx` apenas em produção, lendo `VITE_SENTRY_DSN` (publishable, fica em `.env`/code).
+- Server functions: `@sentry/node` opcional na fase 2 (começo só frontend; suficiente para 90% dos casos).
+- Pedir ao usuário o DSN do Sentry quando esta parte for implementada (gratuito em sentry.io).
+
+### 2.2 Logs internos (tabela `system_logs`)
+
+Colunas: `level` (info/warn/error), `source` (frontend/server/webhook), `message`, `context` (jsonb), `user_id`, `created_at`.
+
+Server function `logEvent({ level, source, message, context })` grava na tabela. Usada em: falhas de pagamento, falhas de frete, erros de server functions com try/catch.
+
+### 2.3 Painel `/admin/saude`
+
+Quatro seções:
+
+1. **Status do banco e APIs** — cards com último ping ao Supabase, à API de frete configurada e ao gateway de pagamento. Server function `checkSystemHealth` faz os pings sob demanda.
+2. **Logs de erros recentes** — tabela paginada de `system_logs` filtrável por nível.
+3. **Métricas de uso** — cards: pedidos hoje/semana/mês, ticket médio, produtos sem estoque, taxa de conversão (visitas vs pedidos — visitas via tabela `page_views` simples).
+4. **Auditoria** — últimas 50 ações da `audit_log`.
+
+### 2.4 Auditoria
+
+- Tabela `audit_log`: `actor_id`, `actor_email`, `action` (`product.update`, `order.status_change`, `branding.update`...), `entity_type`, `entity_id`, `diff` (jsonb), `created_at`.
+- Server function `recordAudit(...)` chamada em todos os mutate handlers do admin (produtos, pedidos, branding, páginas, frete).
+
+### 2.5 Tracking de pageviews
+
+Tabela `page_views`: `path`, `referrer`, `user_agent`, `created_at`. Hook no `__root.tsx` dispara `recordPageView` em cada navegação (não-admin). Alimenta métricas de uso.
+
+---
 
 ## Detalhes técnicos
-- Queries via `supabase` client (browser) — RLS já protege
-- TanStack Query para cache e invalidação
-- Formulários com `react-hook-form` + `zod`
-- Toasts de sucesso/erro com `sonner`
-- Imagens de produto: campo URL (storage opcional em iteração futura)
 
-## Arquivos
-**Migrations**: 1 SQL com tudo (enums, tabelas, RLS, trigger, seed)  
-**Editar**: `AdminAuthContext.tsx`, `admin.tsx`, `admin.login.tsx`, `admin.index.tsx`, `admin.produtos.tsx`, `admin.pedidos.tsx`, `admin.clientes.tsx`, `checkout.tsx`  
-**Criar**: `src/hooks/useAdminProducts.ts`, dialogs de produto/pedido
+- Todas as escritas vão via `createServerFn` com `requireSupabaseAuth` + verificação de role admin no handler.
+- `BrandingProvider` busca `site_settings` no SSR via server function pública (admin) e cacheia com React Query (`staleTime: 5min`).
+- Rich text: armazena HTML sanitizado (`DOMPurify` no client antes do save).
+- Upload de logo/favicon/hero: reusa bucket `product-media` (já público).
+- Sentry só dispara em `import.meta.env.PROD`.
+
+---
+
+## Plano de entrega (3 fases)
+
+**Fase 1 — Whitelabel base** (esta entrega)
+- Migration: `site_settings`, `pages`, `audit_log`, `system_logs`, `page_views`
+- `BrandingProvider` + aplicação no Header/Footer/WhatsappFab
+- Admin `/admin/branding`
+- Conversão de Sobre, Suporte para páginas dinâmicas + admin `/admin/paginas`
+- Seed das páginas com o conteúdo atual
+
+**Fase 2 — Saúde & telemetria**
+- Admin `/admin/saude` com as 4 seções
+- `recordAudit` wired em todas as mutations existentes
+- `recordPageView` no root
+- Sentry no frontend (pede DSN)
+
+**Fase 3 — Refinos**
+- Conga e Kits também dinâmicos
+- Construtor de blocos completo (atualmente: rich text + imagem + CTA)
+- Sentry no server side se necessário
+
+---
+
+## Confirmação
+
+Confirma que sigo nessa ordem (Fase 1 agora, Fase 2 na próxima mensagem)? Ou prefere que eu entregue tudo de uma vez em uma mensagem maior?

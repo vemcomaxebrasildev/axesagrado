@@ -16,6 +16,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { WhatsappFab } from "@/components/site/WhatsappFab";
 import { CookieConsent } from "@/components/site/CookieConsent";
+import { BrandingApplier } from "@/components/site/BrandingApplier";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -137,6 +138,7 @@ function RootComponent() {
             {!isAdmin && <Footer />}
             {!isAdmin && <WhatsappFab />}
             {!isAdmin && <CookieConsent />}
+            <BrandingApplier />
             <Toaster position="top-center" richColors />
           </div>
         </CartProvider>
