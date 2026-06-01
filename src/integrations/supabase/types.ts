@@ -65,6 +65,50 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_menu: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          position: number
+          response_text: string | null
+          title: string
+          trigger: string
+          updated_at: string
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          position?: number
+          response_text?: string | null
+          title: string
+          trigger: string
+          updated_at?: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          position?: number
+          response_text?: string | null
+          title?: string
+          trigger?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_menu_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "chatbot_menu"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expenses: {
         Row: {
           amount: number
@@ -502,6 +546,122 @@ export type Database = {
         }
         Relationships: []
       }
+      wa_agents: {
+        Row: {
+          active: boolean
+          created_at: string
+          display_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          display_name: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wa_conversations: {
+        Row: {
+          assigned_to: string | null
+          bot_state: Json | null
+          contact_name: string | null
+          contact_phone: string
+          created_at: string
+          first_response_at: string | null
+          id: string
+          last_message_at: string
+          queue: string | null
+          resolved_at: string | null
+          status: string
+          unread_count: number
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          bot_state?: Json | null
+          contact_name?: string | null
+          contact_phone: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          last_message_at?: string
+          queue?: string | null
+          resolved_at?: string | null
+          status?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          bot_state?: Json | null
+          contact_name?: string | null
+          contact_phone?: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          last_message_at?: string
+          queue?: string | null
+          resolved_at?: string | null
+          status?: string
+          unread_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      wa_messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          direction: string
+          id: string
+          kind: string
+          sender_user_id: string | null
+          wa_message_id: string | null
+        }
+        Insert: {
+          body: string
+          conversation_id: string
+          created_at?: string
+          direction: string
+          id?: string
+          kind?: string
+          sender_user_id?: string | null
+          wa_message_id?: string | null
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          direction?: string
+          id?: string
+          kind?: string
+          sender_user_id?: string | null
+          wa_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "wa_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -514,6 +674,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_wa_staff: { Args: { _uid: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "customer"
