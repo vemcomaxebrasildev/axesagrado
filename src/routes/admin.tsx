@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, Home, Star, Wallet, Truck, Palette, FileText, Activity } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, Home, Star, Wallet, Truck, Palette, FileText, Activity, MessageCircle, Headphones } from "lucide-react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,8 @@ const NAV = [
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/frete", label: "Frete", icon: Truck },
   { to: "/admin/clientes", label: "Clientes", icon: Users },
+  { to: "/admin/whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { to: "/admin/atendimento", label: "Atendimento", icon: Headphones },
   { to: "/admin/saude", label: "Saúde", icon: Activity },
 ];
 

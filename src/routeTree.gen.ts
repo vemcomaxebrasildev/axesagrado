@@ -22,6 +22,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
+import { Route as AdminWhatsappRouteImport } from './routes/admin.whatsapp'
 import { Route as AdminSaudeRouteImport } from './routes/admin.saude'
 import { Route as AdminProdutosRouteImport } from './routes/admin.produtos'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
@@ -33,8 +34,11 @@ import { Route as AdminFinanceiroRouteImport } from './routes/admin.financeiro'
 import { Route as AdminDestaquesRouteImport } from './routes/admin.destaques'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminBrandingRouteImport } from './routes/admin.branding'
+import { Route as AdminAtendimentoRouteImport } from './routes/admin.atendimento'
 import { Route as AuthenticatedMinhaContaRouteImport } from './routes/_authenticated.minha-conta'
 import { Route as AdminPaginasIdRouteImport } from './routes/admin.paginas.$id'
+import { Route as AdminAtendimentoMetricasRouteImport } from './routes/admin.atendimento.metricas'
+import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp/webhook'
 
 const SuporteRoute = SuporteRouteImport.update({
   id: '/suporte',
@@ -100,6 +104,11 @@ const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   path: '/produto/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminWhatsappRoute = AdminWhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSaudeRoute = AdminSaudeRouteImport.update({
   id: '/saude',
   path: '/saude',
@@ -155,6 +164,11 @@ const AdminBrandingRoute = AdminBrandingRouteImport.update({
   path: '/branding',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAtendimentoRoute = AdminAtendimentoRouteImport.update({
+  id: '/atendimento',
+  path: '/atendimento',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AuthenticatedMinhaContaRoute = AuthenticatedMinhaContaRouteImport.update({
   id: '/minha-conta',
   path: '/minha-conta',
@@ -165,6 +179,18 @@ const AdminPaginasIdRoute = AdminPaginasIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminPaginasRoute,
 } as any)
+const AdminAtendimentoMetricasRoute =
+  AdminAtendimentoMetricasRouteImport.update({
+    id: '/metricas',
+    path: '/metricas',
+    getParentRoute: () => AdminAtendimentoRoute,
+  } as any)
+const ApiPublicWhatsappWebhookRoute =
+  ApiPublicWhatsappWebhookRouteImport.update({
+    id: '/api/public/whatsapp/webhook',
+    path: '/api/public/whatsapp/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -178,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/suporte': typeof SuporteRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/admin/atendimento': typeof AdminAtendimentoRouteWithChildren
   '/admin/branding': typeof AdminBrandingRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
@@ -189,9 +216,12 @@ export interface FileRoutesByFullPath {
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
   '/admin/saude': typeof AdminSaudeRoute
+  '/admin/whatsapp': typeof AdminWhatsappRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/atendimento/metricas': typeof AdminAtendimentoMetricasRoute
   '/admin/paginas/$id': typeof AdminPaginasIdRoute
+  '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -204,6 +234,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/suporte': typeof SuporteRoute
   '/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/admin/atendimento': typeof AdminAtendimentoRouteWithChildren
   '/admin/branding': typeof AdminBrandingRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
@@ -215,9 +246,12 @@ export interface FileRoutesByTo {
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
   '/admin/saude': typeof AdminSaudeRoute
+  '/admin/whatsapp': typeof AdminWhatsappRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/atendimento/metricas': typeof AdminAtendimentoMetricasRoute
   '/admin/paginas/$id': typeof AdminPaginasIdRoute
+  '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -233,6 +267,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/suporte': typeof SuporteRoute
   '/_authenticated/minha-conta': typeof AuthenticatedMinhaContaRoute
+  '/admin/atendimento': typeof AdminAtendimentoRouteWithChildren
   '/admin/branding': typeof AdminBrandingRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/destaques': typeof AdminDestaquesRoute
@@ -244,9 +279,12 @@ export interface FileRoutesById {
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/produtos': typeof AdminProdutosRoute
   '/admin/saude': typeof AdminSaudeRoute
+  '/admin/whatsapp': typeof AdminWhatsappRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/atendimento/metricas': typeof AdminAtendimentoMetricasRoute
   '/admin/paginas/$id': typeof AdminPaginasIdRoute
+  '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -262,6 +300,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/suporte'
     | '/minha-conta'
+    | '/admin/atendimento'
     | '/admin/branding'
     | '/admin/clientes'
     | '/admin/destaques'
@@ -273,9 +312,12 @@ export interface FileRouteTypes {
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/admin/saude'
+    | '/admin/whatsapp'
     | '/produto/$slug'
     | '/admin/'
+    | '/admin/atendimento/metricas'
     | '/admin/paginas/$id'
+    | '/api/public/whatsapp/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -288,6 +330,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/suporte'
     | '/minha-conta'
+    | '/admin/atendimento'
     | '/admin/branding'
     | '/admin/clientes'
     | '/admin/destaques'
@@ -299,9 +342,12 @@ export interface FileRouteTypes {
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/admin/saude'
+    | '/admin/whatsapp'
     | '/produto/$slug'
     | '/admin'
+    | '/admin/atendimento/metricas'
     | '/admin/paginas/$id'
+    | '/api/public/whatsapp/webhook'
   id:
     | '__root__'
     | '/'
@@ -316,6 +362,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/suporte'
     | '/_authenticated/minha-conta'
+    | '/admin/atendimento'
     | '/admin/branding'
     | '/admin/clientes'
     | '/admin/destaques'
@@ -327,9 +374,12 @@ export interface FileRouteTypes {
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/admin/saude'
+    | '/admin/whatsapp'
     | '/produto/$slug'
     | '/admin/'
+    | '/admin/atendimento/metricas'
     | '/admin/paginas/$id'
+    | '/api/public/whatsapp/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -345,6 +395,7 @@ export interface RootRouteChildren {
   SobreRoute: typeof SobreRoute
   SuporteRoute: typeof SuporteRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
+  ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -440,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/whatsapp': {
+      id: '/admin/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/admin/whatsapp'
+      preLoaderRoute: typeof AdminWhatsappRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/saude': {
       id: '/admin/saude'
       path: '/saude'
@@ -517,6 +575,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBrandingRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/atendimento': {
+      id: '/admin/atendimento'
+      path: '/atendimento'
+      fullPath: '/admin/atendimento'
+      preLoaderRoute: typeof AdminAtendimentoRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_authenticated/minha-conta': {
       id: '/_authenticated/minha-conta'
       path: '/minha-conta'
@@ -530,6 +595,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/paginas/$id'
       preLoaderRoute: typeof AdminPaginasIdRouteImport
       parentRoute: typeof AdminPaginasRoute
+    }
+    '/admin/atendimento/metricas': {
+      id: '/admin/atendimento/metricas'
+      path: '/metricas'
+      fullPath: '/admin/atendimento/metricas'
+      preLoaderRoute: typeof AdminAtendimentoMetricasRouteImport
+      parentRoute: typeof AdminAtendimentoRoute
+    }
+    '/api/public/whatsapp/webhook': {
+      id: '/api/public/whatsapp/webhook'
+      path: '/api/public/whatsapp/webhook'
+      fullPath: '/api/public/whatsapp/webhook'
+      preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -546,6 +625,17 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface AdminAtendimentoRouteChildren {
+  AdminAtendimentoMetricasRoute: typeof AdminAtendimentoMetricasRoute
+}
+
+const AdminAtendimentoRouteChildren: AdminAtendimentoRouteChildren = {
+  AdminAtendimentoMetricasRoute: AdminAtendimentoMetricasRoute,
+}
+
+const AdminAtendimentoRouteWithChildren =
+  AdminAtendimentoRoute._addFileChildren(AdminAtendimentoRouteChildren)
+
 interface AdminPaginasRouteChildren {
   AdminPaginasIdRoute: typeof AdminPaginasIdRoute
 }
@@ -559,6 +649,7 @@ const AdminPaginasRouteWithChildren = AdminPaginasRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminAtendimentoRoute: typeof AdminAtendimentoRouteWithChildren
   AdminBrandingRoute: typeof AdminBrandingRoute
   AdminClientesRoute: typeof AdminClientesRoute
   AdminDestaquesRoute: typeof AdminDestaquesRoute
@@ -570,10 +661,12 @@ interface AdminRouteChildren {
   AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProdutosRoute: typeof AdminProdutosRoute
   AdminSaudeRoute: typeof AdminSaudeRoute
+  AdminWhatsappRoute: typeof AdminWhatsappRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAtendimentoRoute: AdminAtendimentoRouteWithChildren,
   AdminBrandingRoute: AdminBrandingRoute,
   AdminClientesRoute: AdminClientesRoute,
   AdminDestaquesRoute: AdminDestaquesRoute,
@@ -585,6 +678,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPedidosRoute: AdminPedidosRoute,
   AdminProdutosRoute: AdminProdutosRoute,
   AdminSaudeRoute: AdminSaudeRoute,
+  AdminWhatsappRoute: AdminWhatsappRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -603,6 +697,7 @@ const rootRouteChildren: RootRouteChildren = {
   SobreRoute: SobreRoute,
   SuporteRoute: SuporteRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
+  ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
