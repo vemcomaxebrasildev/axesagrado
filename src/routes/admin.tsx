@@ -19,6 +19,8 @@ const NAV = [
   { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/frete", label: "Frete", icon: Truck },
   { to: "/admin/clientes", label: "Clientes", icon: Users },
+  { to: "/admin/whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { to: "/admin/atendimento", label: "Atendimento", icon: Headphones },
   { to: "/admin/saude", label: "Saúde", icon: Activity },
 ];
 
