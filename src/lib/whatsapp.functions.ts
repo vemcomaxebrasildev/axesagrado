@@ -205,11 +205,13 @@ export const assignConversation = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertStaff(context.supabase, context.userId);
-    const patch: Record<string, unknown> = {
-      assigned_to: data.agent_user_id,
-      status: data.agent_user_id ? "assigned" : "queued",
-    };
-    const { error } = await context.supabase.from("wa_conversations").update(patch).eq("id", data.id);
+    const { error } = await context.supabase
+      .from("wa_conversations")
+      .update({
+        assigned_to: data.agent_user_id,
+        status: data.agent_user_id ? "assigned" : "queued",
+      })
+      .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
