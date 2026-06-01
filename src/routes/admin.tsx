@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, Home, Star, Wallet, Truck, Palette, FileText, Activity } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Users, LogOut, Sparkles, Home, Star, Wallet, Truck, Palette, FileText, Activity, MessageCircle, Headphones } from "lucide-react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { cn } from "@/lib/utils";
 
