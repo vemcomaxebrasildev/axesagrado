@@ -1,10 +1,11 @@
 # ---------- Build stage ----------
-FROM oven/bun:1.1 AS builder
+FROM node:22-slim AS builder
 WORKDIR /app
+RUN corepack enable
 
 # Install deps
-COPY package.json bun.lock* ./
-RUN bun install --frozen-lockfile
+COPY package.json bun.lock* package-lock.json* ./
+RUN npm install --no-audit --no-fund
 
 # Copy source and build
 COPY . .
@@ -19,20 +20,21 @@ ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL \
     VITE_SUPABASE_PROJECT_ID=$VITE_SUPABASE_PROJECT_ID \
     VITE_SENTRY_DSN=$VITE_SENTRY_DSN
 
-RUN bun run build
+# Node server preset -> dist/server/index.mjs + dist/client
+ENV NITRO_PRESET=node-server
+RUN npm run build
 
 # ---------- Runtime stage ----------
-FROM oven/bun:1.1-slim AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000 \
     HOST=0.0.0.0
 
 # Copy build output and minimal runtime files
-COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
-# TanStack Start outputs a Nitro-compatible Node server at .output/server/index.mjs
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["node", "dist/server/index.mjs"]

@@ -1,77 +1,84 @@
 # Guia de Deploy
 
-Este projeto pode ser publicado de duas formas em servidor externo.
+Saída do build (fora da Lovable): **`dist/`**
+- `dist/client` → arquivos estáticos (assets)
+- `dist/server/index.mjs` → servidor SSR (Node)
+
+> Nada é gerado em `.output`. O diretório de saída está fixado em `vite.config.ts`.
 
 ---
 
-## Opção A — Docker (SSR completo, recomendado)
+## Hostinger (Node.js / VPS)
 
-Suporta server functions, SSR, rotas dinâmicas e admin. Roda em qualquer VPS
-(DigitalOcean, AWS EC2, Hetzner, Railway, Render, Fly.io etc.).
+Configuração no painel:
+
+| Campo | Valor |
+|---|---|
+| Install command | `npm install` |
+| Build command | `npm run build:node` |
+| Output Directory | `dist` |
+| Start command | `npm start` (= `node dist/server/index.mjs`) |
+| Node version | 20 ou 22 |
+
+Variáveis de ambiente (Environment Variables):
+```
+NITRO_PRESET=node-server
+NODE_ENV=production
+PORT=3000
+HOST=0.0.0.0
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_PUBLISHABLE_KEY=...
+VITE_SUPABASE_PROJECT_ID=...
+```
+
+Notas:
+- `NITRO_PRESET=node-server` é o que garante um servidor Node (sem ele, o build
+  pode mirar Cloudflare). O `build:node` já define isso; a variável cobre painéis
+  que executam `npm run build` direto.
+- Se o painel só aceitar **hospedagem estática**, este projeto **não funciona**:
+  o build é SSR e não gera `index.html`. Use plano com Node.js/VPS ou publique pela Lovable.
+- `SUPABASE_SERVICE_ROLE_KEY` não é exportável do Lovable Cloud; recursos que
+  dependem dela só funcionam na publicação pela Lovable.
+
+---
+
+## Opção A — Docker (SSR completo, VPS)
 
 ### 1. Pré-requisitos
 - Docker 24+ e Docker Compose
-- Conta no Lovable Cloud (Supabase) já provisionada
 
 ### 2. Configurar variáveis
 ```bash
 cp .env.example .env
-# edite .env com as chaves do projeto (veja painel Lovable Cloud)
 ```
 
 ### 3. Build + run
 ```bash
 docker compose up -d --build
 ```
-App disponível em `http://localhost:3000`.
+App em `http://localhost:3000`.
 
-### 4. Atrás de proxy reverso (Nginx/Caddy)
-Exemplo Caddy:
+### 4. Proxy reverso (Caddy)
 ```
 seudominio.com {
   reverse_proxy localhost:3000
 }
 ```
 
-### 5. Deploy em provedores específicos
-- **Railway / Render / Fly.io**: conecte o repo, eles detectam o `Dockerfile` automaticamente.
+### 5. Provedores
+- **Railway / Render / Fly.io**: detectam o `Dockerfile` automaticamente.
 - **VPS manual**: `git pull && docker compose up -d --build`.
-- **CI/CD**: faça push da imagem para um registry (GHCR, Docker Hub) e use `docker compose pull && up -d`.
 
 ---
 
-## Opção B — Build estático (SSG)
+## Opção B — Sem Docker, direto no servidor
 
-Gera apenas HTML/CSS/JS. **Limitações:**
-- Server functions (`createServerFn`) **não funcionam** — todas as chamadas precisam ir direto ao Supabase pelo cliente.
-- Rotas dinâmicas (`/admin/produtos/$id`) precisam de fallback SPA.
-- Auditoria e telemetria server-side precisam ser reescritas no cliente ou movidas para Edge Functions Supabase.
-
-### 1. Build
 ```bash
-bun install
-bun run build
+npm install
+npm run build:node
+PORT=3000 npm start
 ```
-Saída em `.output/public/` (assets) — para SSG puro, use deploy com fallback SPA.
-
-### 2. Hospedagem
-- **Netlify**: arraste `.output/public/` ou conecte o repo. Adicione `_redirects`:
-  ```
-  /*  /index.html  200
-  ```
-- **Vercel**: framework preset "Other", output dir `.output/public`.
-- **Cloudflare Pages**: build command `bun run build`, output `.output/public`.
-- **AWS S3 + CloudFront**: upload do conteúdo, configure `index.html` como error doc.
-- **GitHub Pages**: copie `.output/public/` para branch `gh-pages`.
-
-### 3. Variáveis (build-time)
-Configure no painel do provedor:
-```
-VITE_SUPABASE_URL
-VITE_SUPABASE_PUBLISHABLE_KEY
-VITE_SUPABASE_PROJECT_ID
-VITE_SENTRY_DSN
-```
+Use `pm2 start dist/server/index.mjs --name vem-com-axe` para manter no ar.
 
 ---
 
@@ -79,8 +86,6 @@ VITE_SENTRY_DSN
 
 | Necessidade | Opção |
 |---|---|
-| Admin, server functions, SSR, SEO dinâmico | **Docker** |
-| Site simples, CDN global, custo zero | **Estático** |
-| Webhooks, cron, telemetria server-side | **Docker** |
-
-Para este projeto (CMS whitelabel + admin + telemetria), recomendamos **Docker**.
+| Admin, server functions, SSR, SEO dinâmico | **Node/Docker** |
+| Zero configuração e todas as features | **Publish da Lovable** |
+| Hospedagem estática pura | **Não suportado** |
