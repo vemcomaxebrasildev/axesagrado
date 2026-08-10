@@ -674,7 +674,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_wa_staff: { Args: { _uid: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "customer"
