@@ -74,6 +74,25 @@ Observações:
 - Deploy por Git: aponte para o repositório sincronizado com a Lovable, branch `main`, e ative o rebuild automático a cada push.
 - Recursos que exigem `SUPABASE_SERVICE_ROLE_KEY` (não exportável do Lovable Cloud) só funcionam na publicação pela Lovable.
 
+### Como resolver os dois pontos de atenção
+
+**1. Variáveis `VITE_*` lidas no build**
+
+Elas apontam sempre para o mesmo backend (Lovable Cloud), então na prática você configura uma vez e nunca mexe. Para não depender de lembrar disso:
+
+- Cadastre as três variáveis no painel **antes do primeiro build**.
+- Ative **rebuild automático a cada push** no deploy por Git — assim, qualquer troca de valor só exige salvar a variável e disparar "Redeploy"; não há passo manual no servidor.
+- Nunca coloque segredo em variável `VITE_*`: tudo com esse prefixo vai para o navegador. A publishable key é pública por design (protegida por RLS) — a service role key jamais.
+
+**2. Chave privilegiada (`SUPABASE_SERVICE_ROLE_KEY`)**
+
+No projeto, só o **módulo de WhatsApp** usa essa chave (webhook `/api/public/whatsapp/webhook`, chatbot e envio de mensagens). Todo o resto — loja, catálogo, carrinho, checkout, área do cliente e o painel admin — funciona apenas com RLS e a publishable key. Opções:
+
+- **Recomendado:** publicar pela Lovable (a chave é injetada automaticamente) e usar a Hostinger só se precisar de servidor próprio.
+- **Hostinger + WhatsApp:** trocar o Lovable Cloud por um projeto Supabase próprio, onde você tem acesso à service role key, e preenchê-la em `SUPABASE_SERVICE_ROLE_KEY` no painel (variável **sem** prefixo `VITE_`, portanto só no servidor).
+- **Hostinger sem WhatsApp:** deixar a variável vazia. Nada quebra no build nem nas outras áreas; apenas as rotas de WhatsApp retornam erro se chamadas.
+
+
 ---
 
 ## Hostinger via GitHub (deploy automático)
