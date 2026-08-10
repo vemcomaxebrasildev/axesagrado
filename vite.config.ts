@@ -12,4 +12,11 @@ export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
   },
+  // Fixa o diretório de saída em `dist` (dist/client = estáticos, dist/server = servidor).
+  // Evita que presets Node gerem `.output` em hospedagens externas (Hostinger, VPS, CI).
+  // Dentro do build da Lovable o preset/layout Cloudflare continua sendo forçado.
+  nitro: {
+    output: { dir: "dist", publicDir: "dist/client", serverDir: "dist/server" },
+  },
 });
+
