@@ -42,7 +42,42 @@ Notas:
 
 ---
 
+## Hostinger — plano compartilhado com "Node.js App" (Nitro)
+
+Se o painel lista **Nitro** entre os frameworks suportados, este projeto roda.
+Configuração exata:
+
+| Campo | Valor |
+|---|---|
+| Node version | **22.x** |
+| Package manager | `npm` |
+| Install command | `npm install` |
+| Build command | `npm run build:node` |
+| Output Directory | `dist` |
+| Start command | `npm start` |
+| Entry / startup file | `dist/server/index.mjs` |
+
+Variáveis de ambiente:
+```
+NITRO_PRESET=node-server
+NODE_ENV=production
+HOST=0.0.0.0
+PORT=3000            # ou a porta que o painel injetar
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_PUBLISHABLE_KEY=...
+VITE_SUPABASE_PROJECT_ID=...
+```
+
+Observações:
+- Se o painel injetar a própria `PORT`, **não** fixe o valor — o servidor Nitro usa `process.env.PORT`.
+- As três variáveis `VITE_*` são lidas **no build**; se mudarem, é preciso rebuildar.
+- Deploy por Git: aponte para o repositório sincronizado com a Lovable, branch `main`, e ative o rebuild automático a cada push.
+- Recursos que exigem `SUPABASE_SERVICE_ROLE_KEY` (não exportável do Lovable Cloud) só funcionam na publicação pela Lovable.
+
+---
+
 ## Hostinger via GitHub (deploy automático)
+
 
 ### 1. Enviar o código para o GitHub
 Na Lovable: menu **+** (chat) → **GitHub** → **Connect project** → autorizar → **Create Repository**.
