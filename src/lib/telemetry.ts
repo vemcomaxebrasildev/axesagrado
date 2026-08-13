@@ -19,15 +19,13 @@ export async function recordAudit(params: {
   diff?: Record<string, unknown> | null;
 }) {
   try {
-    const { data: userData } = await supabase.auth.getUser();
-    const user = userData.user;
-    await supabase.from("audit_log").insert({
-      actor_id: user?.id ?? null,
-      actor_email: user?.email ?? null,
-      action: params.action,
-      entity_type: params.entityType,
-      entity_id: params.entityId ?? null,
-      diff: (params.diff ?? null) as never,
+    // Escrita via função controlada no servidor: o ator é derivado do token,
+    // nunca enviado pelo cliente (evita forjar trilha de auditoria).
+    await supabase.rpc("log_audit", {
+      p_action: params.action,
+      p_entity_type: params.entityType,
+      p_entity_id: params.entityId ?? undefined,
+      p_diff: (params.diff ?? null) as never,
     });
   } catch (err) {
     // silencioso — telemetria não pode derrubar a UI
@@ -42,13 +40,11 @@ export async function recordSystemLog(params: {
   context?: Record<string, unknown> | null;
 }) {
   try {
-    const { data: userData } = await supabase.auth.getUser();
-    await supabase.from("system_logs").insert({
-      level: params.level ?? "info",
-      source: params.source ?? "client",
-      message: params.message,
-      context: (params.context ?? null) as never,
-      user_id: userData.user?.id ?? null,
+    await supabase.rpc("log_system_event", {
+      p_level: params.level ?? "info",
+      p_source: params.source ?? "client",
+      p_message: params.message,
+      p_context: (params.context ?? null) as never,
     });
   } catch (err) {
     console.warn("[system_logs] insert failed", err);
@@ -58,11 +54,9 @@ export async function recordSystemLog(params: {
 export async function recordPageView(path: string) {
   try {
     if (path.startsWith("/admin")) return; // não monitora admin
-    await supabase.from("page_views").insert({
-      path,
-      referrer: typeof document !== "undefined" ? document.referrer || null : null,
-      user_agent:
-        typeof navigator !== "undefined" ? navigator.userAgent || null : null,
+    await supabase.rpc("log_page_view", {
+      p_path: path,
+      p_referrer: typeof document !== "undefined" ? document.referrer || undefined : undefined,
     });
   } catch (err) {
     console.warn("[page_views] insert failed", err);

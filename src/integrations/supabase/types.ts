@@ -674,6 +674,28 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_audit: {
+        Args: {
+          p_action: string
+          p_diff?: Json
+          p_entity_id?: string
+          p_entity_type: string
+        }
+        Returns: undefined
+      }
+      log_page_view: {
+        Args: { p_path: string; p_referrer?: string }
+        Returns: undefined
+      }
+      log_system_event: {
+        Args: {
+          p_context?: Json
+          p_level: string
+          p_message: string
+          p_source: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "customer"
